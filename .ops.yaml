@@ -17,6 +17,9 @@ task:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - kubectl get namespaces "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create namespace "${NAMESPACE}"
+  helm-add-repo:
+    step:
+      - helm repo add bitnami https://charts.bitnami.com/bitnami
   mongo:
     args:
       cmd:
@@ -26,7 +29,6 @@ task:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/mongo ${TMP}/mongo
-#      - helm repo add bitnami https://charts.bitnami.com/bitnami
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values-adapter.yaml" --allow-unreleased;;
