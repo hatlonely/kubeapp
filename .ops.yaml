@@ -26,7 +26,7 @@ task:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/mongo ${TMP}/mongo
-      - helm repo add bitnami https://charts.bitnami.com/bitnami
+#      - helm repo add bitnami https://charts.bitnami.com/bitnami
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values-adapter.yaml" --allow-unreleased;;
