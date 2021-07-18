@@ -1,0 +1,37 @@
+name: kubeapp
+
+dep:
+  ops:
+    type: git
+    url: "https://github.com/hatlonely/ops.git"
+    version: master
+
+env:
+  dev:
+    K8S_CONTEXT: home-k8s
+    NAMESPACE: dev
+
+
+task:
+  namespace:
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - kubectl get namespaces "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create namespace "${NAMESPACE}"
+  mongo:
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/mongo ${TMP}/mongo
+      - helm repo add bitnami https://charts.bitnami.com/bitnami
+      - |
+        case "${cmd}" in
+          "diff") helm diff upgrade -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values.yaml" --allow-unreleased;;
+          "install") helm install -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values.yaml";;
+          "upgrade") helm upgrade -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values.yaml";;
+          "delete") helm delete -n "${NAMESPACE}" mongo;;
+          "password") kubectl get secret --namespace dev mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode
+        esac
