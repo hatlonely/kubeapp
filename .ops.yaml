@@ -20,6 +20,7 @@ task:
     step:
       - helm repo add bitnami https://charts.bitnami.com/bitnami
   mongo:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
     args:
       cmd:
         type: string
@@ -27,11 +28,11 @@ task:
         validation: x in ["diff", "install", "delete", "upgrade", "password"]
     const:
       app: mongo
-      version: 10.23.0
       chart: bitnami/mongodb
+      version: 10.23.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/mongo ${TMP}/mongo
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
@@ -41,6 +42,7 @@ task:
           "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
         esac
   redis:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/redis
     args:
       cmd:
         type: string
@@ -48,11 +50,11 @@ task:
         validation: x in ["diff", "install", "delete", "upgrade", "password"]
     const:
       app: redis
-      version: 10.8.1
       chart: bitnami/redis
+      version: 10.8.1
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/redis ${TMP}/redis
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
@@ -60,4 +62,26 @@ task:
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" redis -o jsonpath="{.data.redis-password}" | base64 --decode; echo
+        esac
+  mysql:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/mysql
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+    const:
+      app: mysql
+      chart: bitnami/mysql
+      version: 8.7.2
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
         esac
