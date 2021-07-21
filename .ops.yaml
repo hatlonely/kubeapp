@@ -25,14 +25,39 @@ task:
         type: string
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade", "password"]
+    const:
+      app: mongo
+      version: 10.23.0
+      chart: bitnami/mongodb
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/mongo ${TMP}/mongo
       - |
         case "${cmd}" in
-          "diff") helm diff upgrade -n "${NAMESPACE}" mongo bitnami/mongodb -f "${TMP}/mongo/values-adapter.yaml" --allow-unreleased --version=10.23.0;;
-          "install") helm install -n "${NAMESPACE}" mongo bitnami/mongodb -f "${TMP}/mongo/values-adapter.yaml" --version=10.23.0;;
-          "upgrade") helm upgrade -n "${NAMESPACE}" mongo bitnami/mongodb -f "${TMP}/mongo/values-adapter.yaml" --version=10.23.0;;
-          "delete") helm delete -n "${NAMESPACE}" mongo;;
-          "password") kubectl get secret --namespace dev mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode
+        esac
+  redis:
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+    const:
+      app: redis
+      version: 10.8.1
+      chart: bitnami/redis
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/redis ${TMP}/redis
+      - |
+        case "${cmd}" in
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" redis -o jsonpath="{.data.redis-password}" | base64 --decode
         esac
