@@ -61,7 +61,29 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
-          "password") kubectl get secret --namespace "${NAMESPACE}" redis -o jsonpath="{.data.redis-password}" | base64 --decode; echo
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.redis-password}" | base64 --decode; echo
+        esac
+  redis-cluster:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/redis-cluster
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+    const:
+      app: redis-cluster
+      chart: bitnami/redis-cluster
+      version: 6.2.4
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.redis-password}" | base64 --decode; echo
         esac
   mysql:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mysql
@@ -83,5 +105,6 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
-          "password") kubectl get secret --namespace "${NAMESPACE}" mysql -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
         esac
+
