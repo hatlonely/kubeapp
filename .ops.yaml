@@ -30,9 +30,9 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/mongo ${TMP}/mongo
       - |
         case "${cmd}" in
-          "diff") helm diff upgrade -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values-adapter.yaml" --allow-unreleased;;
-          "install") helm install -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values-adapter.yaml";;
-          "upgrade") helm upgrade -n "${NAMESPACE}" mongo bitnami/mongodb  -f "${TMP}/mongo/values-adapter.yaml";;
+          "diff") helm diff upgrade -n "${NAMESPACE}" mongo bitnami/mongodb -f "${TMP}/mongo/values-adapter.yaml" --allow-unreleased --version=10.23.0;;
+          "install") helm install -n "${NAMESPACE}" mongo bitnami/mongodb -f "${TMP}/mongo/values-adapter.yaml" --version=10.23.0;;
+          "upgrade") helm upgrade -n "${NAMESPACE}" mongo bitnami/mongodb -f "${TMP}/mongo/values-adapter.yaml" --version=10.23.0;;
           "delete") helm delete -n "${NAMESPACE}" mongo;;
           "password") kubectl get secret --namespace dev mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode
         esac
