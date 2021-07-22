@@ -129,7 +129,6 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
-          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
         esac
   kibana:
     description: https://github.com/elastic/helm-charts/tree/master/kibana
@@ -151,5 +150,4 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
-          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
         esac
