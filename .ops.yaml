@@ -117,7 +117,7 @@ task:
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade", "password"]
     const:
-      app: mysql
+      app: phpmyadmin
       chart: bitnami/phpmyadmin
       version: 8.2.10
     step:
