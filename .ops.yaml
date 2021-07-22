@@ -20,7 +20,35 @@ task:
     step:
       - helm repo add bitnami https://charts.bitnami.com/bitnami
       - helm repo add elastic https://helm.elastic.co
+      - helm repo add k8s-dashboard https://kubernetes.github.io/dashboard
       - helm repo update
+  k8s-dashboard:
+    description: |
+      https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard/4.3.1
+      https://github.com/kubernetes/dashboard/tree/master/aio/deploy/helm-chart/kubernetes-dashboard
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+    const:
+      app: k8s-dashboard
+      chart: k8s-dashboard/kubernetes-dashboard
+      version: 4.3.1
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password")
+            ADMIN_SECRET=$(kubectl get secrets -n kube-system | grep dashboard-admin | awk '{print $1}')
+            DASHBOARD_LOGIN_TOKEN=$(kubectl describe secret -n kube-system ${ADMIN_SECRET} | grep -E '^token' | awk '{print $2}')
+            echo ${DASHBOARD_LOGIN_TOKEN}
+        esac
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
     args:
