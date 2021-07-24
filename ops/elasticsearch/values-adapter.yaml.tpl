@@ -1,5 +1,3 @@
-clusterName: "elasticsearch"
-
 persistence:
   enable: true
 
