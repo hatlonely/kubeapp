@@ -11,6 +11,8 @@ env:
     K8S_CONTEXT: home-k8s
     NAMESPACE: dev
     STORAGE_CLASS: nfs-client
+    SECRET_NAME: k8s-secret
+    KIBANA_HOST: k8s.kibana.hatlonely.com
 
 task:
   namespace:
