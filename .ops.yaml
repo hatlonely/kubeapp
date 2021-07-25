@@ -13,6 +13,12 @@ env:
     STORAGE_CLASS: nfs-client
     SECRET_NAME: k8s-secret
     KIBANA_HOST: k8s.kibana.hatlonely.com
+  ali:
+    K8S_CONTEXT: weboffice-regression
+    NAMESPACE: hatlonely
+    STORAGE_CLASS: alicloud-disk-topology
+    SECRET_NAME: k8s-secret
+    KIBANA_HOST: k8s.kibana.hatlonely.com
 
 task:
   namespace:
@@ -172,7 +178,7 @@ task:
     const:
       app: elasticsearch
       chart: elastic/elasticsearch
-      version: 7.13.4
+      version: 7.12.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
@@ -191,6 +197,10 @@ task:
             kubectl delete pvc -n "${NAMESPACE}" security-master-security-master-0
             kubectl delete pvc -n "${NAMESPACE}" security-master-security-master-1
             kubectl delete pvc -n "${NAMESPACE}" security-master-security-master-2
+            kubectl delete secret -n "${NAMESPACE}" elastic-certificate-crt
+            kubectl delete secret -n "${NAMESPACE}" elastic-certificate-pem
+            kubectl delete secret -n "${NAMESPACE}" elastic-certificates
+            kubectl delete secret -n "${NAMESPACE}" elastic-credentials
             ;;
           "ssl")
             docker rm -f elastic-helm-charts-certs || true
