@@ -1,3 +1,7 @@
+global:
+  imagePullSecrets:
+    - name: "${PULL_SECRET_NAME}"
+
 prometheus:
   prometheusSpec:
     storageSpec:
