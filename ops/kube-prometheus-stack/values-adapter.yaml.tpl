@@ -34,7 +34,7 @@ grafana:
         hosts:
           - "${GRAFANA_HOST}"
 
-node-exporter:
+prometheus-node-exporter:
   image:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/node-exporter"
     tag: v1.2.0
