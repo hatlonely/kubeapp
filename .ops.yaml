@@ -215,6 +215,10 @@ task:
             openssl pkcs12 -nodes -passin pass:'' -in elastic-certificates.p12 -out elastic-certificate.pem && \
             openssl x509 -outform der -in elastic-certificate.pem -out elastic-certificate.crt
             ;;
+          "password")
+            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.username}" | base64 -d; echo
+            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.password}" | base64 -d; echo
+            ;;
         esac
   kibana:
     description: https://github.com/elastic/helm-charts/tree/master/kibana
