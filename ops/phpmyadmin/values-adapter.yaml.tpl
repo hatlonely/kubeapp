@@ -1,5 +1,6 @@
 ingress:
   enabled: true
+  hostname: "${PHPMYADMIN_HOST}"
   hosts:
     - host: "${PHPMYADMIN_HOST}"
       paths:
