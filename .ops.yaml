@@ -12,6 +12,7 @@ env:
     NAMESPACE: dev
     STORAGE_CLASS: nfs-client
     SECRET_NAME: k8s-secret
+    ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
     KIBANA_HOST: k8s.kibana.hatlonely.com
   ali:
     K8S_CONTEXT: weboffice-regression
