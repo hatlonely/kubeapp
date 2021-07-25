@@ -232,7 +232,13 @@ task:
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
+          "install")
+            kubectl get secret kibana -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic kibana -n "${NAMESPACE}" --from-literal=encryptionkey="${KIBANA_PASSWORD}"
+            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version}
+            ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/mongo/values-adapter.yaml" --version=${version};;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete secret -n "${NAMESPACE}" kibana
+            ;;
         esac
