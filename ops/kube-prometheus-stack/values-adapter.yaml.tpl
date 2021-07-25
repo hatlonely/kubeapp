@@ -9,6 +9,11 @@ prometheus:
             requests:
               storage: 50Gi
 
+prometheusOperator:
+  image:
+    repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus-operator"
+    tag: v0.49.0
+
 kube-state-metrics:
   image:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kube-state-metrics"
