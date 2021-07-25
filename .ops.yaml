@@ -249,7 +249,9 @@ task:
             ;;
         esac
   etcd-operator:
-    description: https://github.com/helm/charts/tree/master/stable/etcd-operator
+    description: |
+      https://github.com/helm/charts/tree/master/stable/etcd-operator
+      https://github.com/coreos/etcd-operator/blob/master/doc/user/install_guide.md
     args:
       cmd:
         type: string
@@ -268,4 +270,21 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
+        esac
+  etcd-cluster:
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade"]
+    const:
+      app: etcd-cluster
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "diff") kubectl apply -f ${TMP}/${app}/etcd-cluster.yaml --dry-run=server -o yaml;;
+          "install"|"upgrade") kubectl apply -f ${TMP}/${app}/etcd-cluster.yaml;;
+          "delete") kubectl delete -f ${TMP}/${app}/etcd-cluster.yaml;;
         esac
