@@ -5,5 +5,10 @@ image:
   pullSecrets:
     - name: "${PULL_SECRET_NAME}"
 
+persistence:
+  enabled: true
+  storageClass: "${STORAGE_CLASS}"
+  size: 50Gi
+
 auth:
   rootPassword: $(kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode)
