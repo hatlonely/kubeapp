@@ -14,6 +14,7 @@ env:
     SECRET_NAME: k8s-secret
     ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
     KIBANA_HOST: k8s.kibana.hatlonely.com
+    KIBANA_PASSWORD: "{{.kibana.password}}"
   ali:
     K8S_CONTEXT: weboffice-regression
     NAMESPACE: hatlonely
