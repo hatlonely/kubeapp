@@ -33,3 +33,8 @@ grafana:
       - secretName: "${SECRET_NAME}"
         hosts:
           - "${GRAFANA_HOST}"
+
+node-exporter:
+  image:
+    repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/node-exporter"
+    tag: v1.2.0
