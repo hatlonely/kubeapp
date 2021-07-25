@@ -20,6 +20,8 @@ grafana:
   image:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/grafana"
     tag: 8.0.5
+    pullSecrets:
+      - "${PULL_SECRET_NAME}"
   sidecar:
     image:
       repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/k8s-sidecar"
@@ -38,3 +40,6 @@ prometheus-node-exporter:
   image:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/node-exporter"
     tag: v1.2.0
+  serviceAccount:
+    imagePullSecrets:
+      - name: "${PULL_SECRET_NAME}"
