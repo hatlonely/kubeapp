@@ -13,9 +13,18 @@ prometheus:
             requests:
               storage: 50Gi
 
+alertmanager:
+  alertmanagerSpec:
+    image:
+      repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/alertmanager"
+      tag: v0.22.2
+
 prometheusOperator:
   image:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus-operator"
+    tag: v0.49.0
+  prometheusConfigReloaderImage:
+    repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus-config-reloader"
     tag: v0.49.0
 
 kube-state-metrics:

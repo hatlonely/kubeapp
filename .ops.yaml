@@ -334,6 +334,8 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "grafana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "grafana" 8.0.5
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "node-exporter" v1.2.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-operator" v0.49.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "alertmanager" v0.22.2
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.49.0
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
