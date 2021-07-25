@@ -179,7 +179,7 @@ task:
     const:
       app: elasticsearch
       chart: elastic/elasticsearch
-      version: 7.12.0
+      version: 7.13.4
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
