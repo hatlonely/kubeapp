@@ -1,10 +1,10 @@
 ingress:
   enabled: true
   hosts:
-    - host: k8s.phpmyadmin.hatlonely.com
+    - host: "${PHPMYADMIN_HOST}"
       paths:
         - path: /
   tls:
-    - secretName: k8s-secret
+    - secretName: "${SECRET_NAME}"
       hosts:
-        - k8s.phpmyadmin.hatlonely.com
+        - "${PHPMYADMIN_HOST}"
