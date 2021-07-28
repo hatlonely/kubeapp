@@ -52,6 +52,7 @@ task:
       - helm repo add elastic https://helm.elastic.co
       - helm repo add k8s-dashboard https://kubernetes.github.io/dashboard
       - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      - helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
       - helm repo update
   k8s-dashboard:
     description: |
