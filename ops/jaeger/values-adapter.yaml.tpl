@@ -3,6 +3,9 @@ provisionDataStore:
   elasticsearch: true
   kafka: false
 
+storage:
+  type: elasticsearch
+
 query:
   ingress:
     enabled: true
