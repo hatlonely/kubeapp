@@ -27,7 +27,15 @@ env:
     NAMESPACE: hatlonely
     STORAGE_CLASS: alicloud-disk-topology
     SECRET_NAME: k8s-secret
+    PULL_SECRET_NAME: "hatlonely-pull-secret"
+    ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
     KIBANA_HOST: k8s.kibana.hatlonely.com
+    PHPMYADMIN_HOST: k8s.phpmyadmin.hatlonely.com
+    GRAFANA_HOST: k8s.grafana.hatlonely.com
+    REGISTRY_ENDPOINT: "{{.registry.aliyun.endpoint}}"
+    REGISTRY_USERNAME: "{{.registry.aliyun.username}}"
+    REGISTRY_PASSWORD: "{{.registry.aliyun.password}}"
+    REGISTRY_NAMESPACE: "{{.registry.aliyun.namespace}}"
 
 task:
   namespace:
@@ -102,7 +110,9 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete pvc -n "${NAMESPACE}" mongo-mongodb;;
           "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
         esac
   redis:

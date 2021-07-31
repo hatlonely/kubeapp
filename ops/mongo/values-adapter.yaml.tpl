@@ -1,9 +1,14 @@
+global:
+  imagePullSecrets:
+    - "${PULL_SECRET_NAME}"
+  storageClass: "${STORAGE_CLASS}"
+
 image:
   registry: "${REGISTRY_ENDPOINT}"
   repository: "${REGISTRY_NAMESPACE}/mongodb"
   tag: 4.4.7-debian-10-r0
   pullSecrets:
-    - name: "${PULL_SECRET_NAME}"
+    - "${PULL_SECRET_NAME}"
 
 persistence:
   enabled: true
