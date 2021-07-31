@@ -17,6 +17,7 @@ env:
     KIBANA_HOST: k8s.kibana.hatlonely.com
     PHPMYADMIN_HOST: k8s.phpmyadmin.hatlonely.com
     GRAFANA_HOST: k8s.grafana.hatlonely.com
+    JAEGER_HOST: k8s.jaeger.hatlonely.com
     KIBANA_PASSWORD: "{{.kibana.password}}"
     REGISTRY_ENDPOINT: "{{.registry.aliyun.endpoint}}"
     REGISTRY_USERNAME: "{{.registry.aliyun.username}}"
@@ -60,6 +61,7 @@ task:
       - helm repo add elastic https://helm.elastic.co
       - helm repo add k8s-dashboard https://kubernetes.github.io/dashboard
       - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      - helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
       - helm repo update
   k8s-dashboard:
     description: |
@@ -378,4 +380,29 @@ task:
             kubectl get secret kube-prometheus-stack-grafana -n dev -o jsonpath="{.data.admin-user}" | base64 -d; echo
             kubectl get secret kube-prometheus-stack-grafana -n dev -o jsonpath="{.data.admin-password}" | base64 -d; echo
             ;;
+        esac
+  jaeger:
+    description: https://github.com/jaegertracing/helm-charts/tree/main/charts/jaeger
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+    const:
+      app: jaeger
+      chart: jaegertracing/jaeger
+      version: 0.46.4
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "library" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cassandra" 3.11.6
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
         esac
