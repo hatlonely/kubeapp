@@ -4,6 +4,7 @@ tolerations:
     operator: "Exists"
     effect: "NoSchedule"
 
+hostNetwork: true
 
 defaultBackend:
   replicaCount: 2
