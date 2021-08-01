@@ -259,8 +259,8 @@ task:
             openssl x509 -outform der -in elastic-certificate.pem -out elastic-certificate.crt
             ;;
           "password")
-            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.username}" | base64 -d; echo
-            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.password}" | base64 -d; echo
+            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.username}" | base64 --decode; echo
+            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.password}" | base64 --decode; echo
             ;;
         esac
   kibana:
@@ -385,8 +385,8 @@ task:
             kubectl delete crd thanosrulers.monitoring.coreos.com
             ;;
           "password")
-            kubectl get secret kube-prometheus-stack-grafana -n dev -o jsonpath="{.data.admin-user}" | base64 -d; echo
-            kubectl get secret kube-prometheus-stack-grafana -n dev -o jsonpath="{.data.admin-password}" | base64 -d; echo
+            kubectl get secret kube-prometheus-stack-grafana -n dev -o jsonpath="{.data.admin-user}" | base64 --decode; echo
+            kubectl get secret kube-prometheus-stack-grafana -n "${NAMESPACE}" -o jsonpath="{.data.admin-password}" | base64 --decode; echo
             ;;
         esac
   jaeger:
