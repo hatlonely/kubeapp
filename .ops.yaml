@@ -14,6 +14,7 @@ env:
     SECRET_NAME: k8s-secret
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
+    DASHBOARD_HOST: k8s.dashboard.hatlonely.com
     KIBANA_HOST: k8s.kibana.hatlonely.com
     PHPMYADMIN_HOST: k8s.phpmyadmin.hatlonely.com
     GRAFANA_HOST: k8s.grafana.hatlonely.com
@@ -30,6 +31,7 @@ env:
     SECRET_NAME: k8s-secret
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
+    DASHBOARD_HOST: k8s.dashboard.hatlonely.com
     KIBANA_HOST: k8s.kibana.hatlonely.com
     PHPMYADMIN_HOST: k8s.phpmyadmin.hatlonely.com
     GRAFANA_HOST: k8s.grafana.hatlonely.com
@@ -65,6 +67,30 @@ task:
       - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
       - helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
       - helm repo update
+  nginx-ingress-controller:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/nginx-ingress-controller
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+    const:
+      app: nginx-ingress-controller
+      chart: bitnami/nginx-ingress-controller
+      version: 7.6.17
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "mongodb" 4.4.7-debian-10-r0
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}"
+        esac
   k8s-dashboard:
     description: |
       https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard/4.3.1

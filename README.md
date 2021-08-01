@@ -1,5 +1,14 @@
 # kubernetes apps
 
+# 首次安装
+
+```shell
+ops --variable .cfg/dev.yaml -a run --env dev --task namespace
+ops --variable .cfg/dev.yaml -a run --env dev --task helm-add-repo
+ops --variable .cfg/dev.yaml -a run --env dev --task ingress --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=install
+```
+
 # 命令
 
 ```shell
