@@ -5,8 +5,9 @@
 ```shell
 ops --variable .cfg/dev.yaml -a run --env dev --task namespace
 ops --variable .cfg/dev.yaml -a run --env dev --task helm-add-repo
-ops --variable .cfg/dev.yaml -a run --env dev --task ingress --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task nfs-client-provisioner --cmd=install
 ```
 
 # 命令

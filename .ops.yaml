@@ -120,6 +120,31 @@ task:
             SECRET_NAME=$(kubectl get secret -n "${NAMESPACE}" | grep k8s-dashboard-kubernetes-dashboard-token | awk '{print $1}')
             kubectl get secret -n "${NAMESPACE}" ${SECRET_NAME} -o jsonpath="{.data.token}" | base64 --decode; echo
         esac
+  nfs-client-provisioner:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/nginx-ingress-controller
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+    const:
+      NAMESPACE: kube-system
+      app: nfs-client-provisioner
+      chart: stable/nfs-client-provisioner
+      version: 1.2.11
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "external_storage" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nfs-client-provisioner" v3.1.0-k8s1.11
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "delete") helm delete -n "${NAMESPACE}" "${app}"
+        esac
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
     args:
