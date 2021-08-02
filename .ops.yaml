@@ -125,8 +125,10 @@ task:
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password")
-            SECRET_NAME=$(kubectl get secret -n "${NAMESPACE}" | grep k8s-dashboard-kubernetes-dashboard-token | awk '{print $1}')
-            kubectl get secret -n "${NAMESPACE}" ${SECRET_NAME} -o jsonpath="{.data.token}" | base64 --decode; echo
+            kubectl get sa dashboard-admin -n "${NAMESPACE}" || kubectl create sa dashboard-admin -n "${NAMESPACE}"
+            kubectl get clusterrolebinding dashboard-admin || kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
+            ADMIN_SECRET=$(kubectl get secrets -n kube-system | grep dashboard-admin | awk '{print $1}')
+            kubectl get secret -n "${NAMESPACE}" ${ADMIN_SECRET} -o jsonpath="{.data.token}" | base64 --decode; echo
         esac
   nfs-client-provisioner:
     description: https://github.com/bitnami/charts/tree/master/bitnami/nginx-ingress-controller
