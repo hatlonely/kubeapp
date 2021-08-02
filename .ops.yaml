@@ -58,6 +58,14 @@ task:
             --docker-password=${REGISTRY_PASSWORD} \
             --namespace=${NAMESPACE}
         }
+      - |
+        kubectl get secret "${PULL_SECRET_NAME}" -n "kube-system" 2>/dev/null 1>&2 || { \
+          kubectl create secret docker-registry ${PULL_SECRET_NAME} \
+            --docker-server=${REGISTRY_ENDPOINT} \
+            --docker-username=${REGISTRY_USERNAME} \
+            --docker-password=${REGISTRY_PASSWORD} \
+            --namespace=kube-system
+        }
   helm-add-repo:
     step:
       - helm repo add stable https://charts.helm.sh/stable
