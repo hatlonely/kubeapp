@@ -116,7 +116,7 @@ task:
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password")
-            SECRET_NAME=$(kubectl get secret -n dev | grep k8s-dashboard-kubernetes-dashboard-token | awk '{print $1}')
+            SECRET_NAME=$(kubectl get secret -n "${NAMESPACE}" | grep k8s-dashboard-kubernetes-dashboard-token | awk '{print $1}')
             kubectl get secret -n "${NAMESPACE}" ${SECRET_NAME} -o jsonpath="{.data.token}" | base64 --decode; echo
         esac
   mongo:
