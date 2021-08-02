@@ -75,6 +75,7 @@ task:
         default: diff
         validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
     const:
+      NAMESPACE: kube-system
       app: nginx-ingress-controller
       chart: bitnami/nginx-ingress-controller
       version: 7.6.17
@@ -101,6 +102,7 @@ task:
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade", "password"]
     const:
+      NAMESPACE: kube-system
       app: k8s-dashboard
       chart: k8s-dashboard/kubernetes-dashboard
       version: 4.3.1
