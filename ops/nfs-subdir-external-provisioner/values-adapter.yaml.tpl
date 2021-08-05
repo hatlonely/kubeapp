@@ -1,8 +1,8 @@
 replicaCount: 3
 
 image:
-  repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/nfs-client-provisioner"
-  tag: v3.1.0-k8s1.11
+  repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/nfs-subdir-external-provisioner"
+  tag: v4.0.2
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
