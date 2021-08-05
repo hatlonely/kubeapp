@@ -13,6 +13,8 @@ ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --
 ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task nfs-subdir-external-provisioner --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task mongo --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task mysql --cmd=install
+
 ```
 
 # 命令
