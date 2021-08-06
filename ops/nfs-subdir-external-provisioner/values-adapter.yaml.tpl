@@ -17,8 +17,3 @@ nfs:
 
 storageClass:
   defaultClass: true
-
-tolerations:
-  - key: "node-role.kubernetes.io/master"
-    operator: "Exists"
-    effect: "NoSchedule"
