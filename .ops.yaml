@@ -405,7 +405,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["image", "crd", "diff", "install", "delete", "upgrade", "password"]
     const:
       app: kube-prometheus-stack
       chart: prometheus-community/kube-prometheus-stack
@@ -425,15 +425,25 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.49.0
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "crd")
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml -o ops/${app}/monitoring.coreos.com_alertmanagerconfigs.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml -o ops/${app}/monitoring.coreos.com_alertmanagers.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml -o ops/${app}/monitoring.coreos.com_podmonitors.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml -o ops/${app}/monitoring.coreos.com_probes.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml -o ops/${app}/monitoring.coreos.com_prometheuses.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml -o ops/${app}/monitoring.coreos.com_prometheusrules.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml -o ops/${app}/monitoring.coreos.com_servicemonitors.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml -o ops/${app}/monitoring.coreos.com_thanosrulers.yaml
+            ;;
           "install")
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
-            kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_alertmanagerconfigs.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_alertmanagers.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_podmonitors.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_probes.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_prometheuses.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_prometheusrules.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_servicemonitors.yaml
+            kubectl apply -f ops/${app}/monitoring.coreos.com_thanosrulers.yaml
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;

@@ -8,6 +8,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task pull-secret
 ops --variable .cfg/dev.yaml -a run --env dev --task helm-add-repo
 
 ops --variable .cfg/dev.yaml -a run --env dev --task nfs-subdir-external-provisioner --cmd=image
+ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=image
 
 ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=install
@@ -15,6 +16,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task nfs-subdir-external-provisi
 ops --variable .cfg/dev.yaml -a run --env dev --task mongo --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task mysql --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task elasticsearch --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=install
 
 ```
 
