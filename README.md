@@ -26,6 +26,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task elasticsearch --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task jaeger --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task phpmyadmin --cmd=install
 
 ```
 

@@ -11,3 +11,5 @@ image:
   registry: "${REGISTRY_ENDPOINT}"
   repository: "${REGISTRY_NAMESPACE}/redis"
   tag: 5.0.7-debian-10-r32
+  pullSecrets:
+    - "${PULL_SECRET_NAME}"
