@@ -13,7 +13,7 @@ prometheus:
             requests:
               storage: 50Gi
     image:
-      repository: quay.io/prometheus/prometheus
+      repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus"
       tag: v2.28.1
 
 alertmanager:
