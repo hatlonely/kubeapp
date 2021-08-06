@@ -15,20 +15,8 @@ primary:
   persistence:
     enabled: true
     size: 50Gi
-  podSecurityContext:
-    enabled: true
-    fsGroup: 1000
-  containerSecurityContext:
-    enabled: true
-    runAsUser: 1000
 
 secondary:
   persistence:
     enabled: true
     size: 50Gi
-  podSecurityContext:
-    enabled: true
-    fsGroup: 1000
-  containerSecurityContext:
-    enabled: true
-    runAsUser: 1000

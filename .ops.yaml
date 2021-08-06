@@ -384,6 +384,7 @@ task:
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade"]
     const:
+      NAMESPACE: kube-system
       app: etcd-operator
       chart: stable/etcd-operator
       version: 0.11.2
