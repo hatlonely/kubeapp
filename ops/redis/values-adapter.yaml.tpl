@@ -13,3 +13,11 @@ image:
   tag: 5.0.7-debian-10-r32
   pullSecrets:
     - "${PULL_SECRET_NAME}"
+
+master:
+  persistence:
+    enabled: true
+
+slave:
+  persistence:
+    enabled: true

@@ -219,7 +219,12 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete pvc -n "${NAMESPACE}" redis-data-redis-master-0
+            kubectl delete pvc -n "${NAMESPACE}" redis-data-redis-slave-0
+            kubectl delete pvc -n "${NAMESPACE}" redis-data-redis-slave-1
+            ;;
           "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.redis-password}" | base64 --decode; echo
         esac
   redis-cluster:
