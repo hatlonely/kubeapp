@@ -17,6 +17,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task mongo --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task mysql --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task elasticsearch --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task jaeger --cmd=install
 
 ```
 

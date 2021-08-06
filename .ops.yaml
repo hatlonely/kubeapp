@@ -43,6 +43,11 @@ env:
     REGISTRY_NAMESPACE: "{{.registry.aliyun.namespace}}"
 
 task:
+  del-master-taint:
+    step:
+      - kubectl taint nodes node0 "node-role.kubernetes.io/master=:NoSchedule-"
+      - kubectl taint nodes node1 "node-role.kubernetes.io/master=:NoSchedule-"
+      - kubectl taint nodes node2 "node-role.kubernetes.io/master=:NoSchedule-"
   namespace:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
