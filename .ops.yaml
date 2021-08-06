@@ -47,6 +47,7 @@ task:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - kubectl get namespaces "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create namespace "${NAMESPACE}"
+      - kubectl get namespaces "monitoring" 2>/dev/null 1>&2 || kubectl create namespace "monitoring"
   pull-secret:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
@@ -65,6 +66,14 @@ task:
             --docker-username=${REGISTRY_USERNAME} \
             --docker-password=${REGISTRY_PASSWORD} \
             --namespace=kube-system
+        }
+      - |
+        kubectl get secret "${PULL_SECRET_NAME}" -n "monitoring" 2>/dev/null 1>&2 || { \
+          kubectl create secret docker-registry ${PULL_SECRET_NAME} \
+            --docker-server=${REGISTRY_ENDPOINT} \
+            --docker-username=${REGISTRY_USERNAME} \
+            --docker-password=${REGISTRY_PASSWORD} \
+            --namespace=monitoring
         }
   helm-add-repo:
     step:
@@ -407,6 +416,7 @@ task:
         default: diff
         validation: x in ["image", "crd", "diff", "install", "delete", "upgrade", "password"]
     const:
+      NAMESPACE: monitoring
       app: kube-prometheus-stack
       chart: prometheus-community/kube-prometheus-stack
       version: 17.0.2

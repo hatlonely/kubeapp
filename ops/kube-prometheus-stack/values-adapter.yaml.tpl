@@ -12,12 +12,23 @@ prometheus:
           resources:
             requests:
               storage: 50Gi
+    image:
+      repository: quay.io/prometheus/prometheus
+      tag: v2.28.1
+    tolerations:
+      - key: "node-role.kubernetes.io/master"
+        operator: "Exists"
+        effect: "NoSchedule"
 
 alertmanager:
   alertmanagerSpec:
     image:
       repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/alertmanager"
       tag: v0.22.2
+    tolerations:
+      - key: "node-role.kubernetes.io/master"
+        operator: "Exists"
+        effect: "NoSchedule"
 
 prometheusOperator:
   image:
@@ -26,6 +37,16 @@ prometheusOperator:
   prometheusConfigReloaderImage:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus-config-reloader"
     tag: v0.49.0
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
+      effect: "NoSchedule"
+  admissionWebhooks:
+    patch:
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
 
 kube-state-metrics:
   image:
