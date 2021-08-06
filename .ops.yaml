@@ -203,7 +203,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["diff", "image", "install", "delete", "upgrade", "password"]
     const:
       app: redis
       chart: bitnami/redis
@@ -213,6 +213,9 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis" 5.0.7-debian-10-r32
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
