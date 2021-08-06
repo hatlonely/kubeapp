@@ -17,8 +17,3 @@ ingress:
 rbac:
   create: true
   clusterAdminRole: true
-
-tolerations:
-  - key: "node-role.kubernetes.io/master"
-    operator: "Exists"
-    effect: "NoSchedule"
