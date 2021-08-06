@@ -21,10 +21,6 @@ primary:
   containerSecurityContext:
     enabled: true
     runAsUser: 1000
-  tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Exists"
-      effect: "NoSchedule"
 
 secondary:
   persistence:
@@ -36,7 +32,3 @@ secondary:
   containerSecurityContext:
     enabled: true
     runAsUser: 1000
-  tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Exists"
-      effect: "NoSchedule"
