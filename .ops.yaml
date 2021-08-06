@@ -486,6 +486,7 @@ task:
         default: diff
         validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
     const:
+      NAMESPACE: monitoring
       app: jaeger
       chart: jaegertracing/jaeger
       version: 0.46.4
