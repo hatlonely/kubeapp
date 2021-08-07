@@ -96,7 +96,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: kube-system
       app: nginx-ingress-controller
@@ -114,6 +114,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}"
         esac
   k8s-dashboard:
@@ -124,7 +125,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: kube-system
       app: k8s-dashboard
@@ -138,6 +139,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password")
             kubectl get sa dashboard-admin -n "${NAMESPACE}" || kubectl create sa dashboard-admin -n "${NAMESPACE}"
@@ -151,7 +153,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: kube-system
       app: nfs-subdir-external-provisioner
@@ -168,6 +170,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}"
         esac
   mongo:
@@ -176,7 +179,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       app: mongo
       chart: bitnami/mongodb
@@ -192,6 +195,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete pvc -n "${NAMESPACE}" mongo-mongodb;;
@@ -203,7 +207,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "image", "install", "delete", "upgrade", "password"]
+        validation: x in ["diff", "image", "install", "delete", "upgrade", "status", "password"]
     const:
       app: redis
       chart: bitnami/redis
@@ -219,6 +223,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete pvc -n "${NAMESPACE}" redis-data-redis-master-0
@@ -233,7 +238,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "password"]
     const:
       app: redis-cluster
       chart: bitnami/redis-cluster
@@ -246,6 +251,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.redis-password}" | base64 --decode; echo
         esac
@@ -255,7 +261,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       app: mysql
       chart: bitnami/mysql
@@ -271,6 +277,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete pvc -n "${NAMESPACE}" data-mysql-0
@@ -283,7 +290,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "image", "install", "delete", "upgrade", "password"]
+        validation: x in ["diff", "image", "install", "delete", "upgrade", "status", "password"]
     const:
       app: phpmyadmin
       chart: bitnami/phpmyadmin
@@ -299,6 +306,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
         esac
@@ -308,7 +316,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password", "ssl"]
+        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl"]
     const:
       app: elasticsearch
       chart: elastic/elasticsearch
@@ -326,6 +334,7 @@ task:
             kubectl get secret elastic-credentials -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic elastic-credentials -n "${NAMESPACE}" --from-literal=password="${ELASTICSEARCH_PASSWORD}" --from-literal=username=elastic
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete pvc -n "${NAMESPACE}" security-master-security-master-0
@@ -358,7 +367,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "password"]
     const:
       app: kibana
       chart: elastic/kibana
@@ -374,6 +383,7 @@ task:
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete secret -n "${NAMESPACE}" kibana
@@ -387,7 +397,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade"]
+        validation: x in ["diff", "install", "delete", "status", "upgrade"]
     const:
       NAMESPACE: kube-system
       app: etcd-operator
@@ -401,6 +411,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
         esac
   etcd-cluster:
@@ -431,7 +442,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "crd", "diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["image", "crd", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: monitoring
       app: kube-prometheus-stack
@@ -475,6 +486,7 @@ task:
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
@@ -497,7 +509,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "password"]
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: monitoring
       app: jaeger
@@ -514,6 +526,7 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
         esac
