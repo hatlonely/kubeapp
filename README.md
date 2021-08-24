@@ -10,6 +10,7 @@ ops --variable .cfg/dev.yaml -a run --env ali --task helm-add-repo
 ops --variable .cfg/dev.yaml -a run --env ali --task nginx-ingress-controller --cmd=image
 ops --variable .cfg/dev.yaml -a run --env ali --task k8s-dashboard --cmd=image
 ops --variable .cfg/dev.yaml -a run --env ali --task nfs-subdir-external-provisioner --cmd=image
+ops --variable .cfg/dev.yaml -a run --env ali --task kube-prometheus-stack --cmd=image
 ops --variable .cfg/dev.yaml -a run --env ali --task mongo --cmd=image
 ops --variable .cfg/dev.yaml -a run --env ali --task mysql --cmd=image
 ops --variable .cfg/dev.yaml -a run --env ali --task elasticsearch --cmd=image
