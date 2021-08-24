@@ -125,7 +125,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: kube-system
       app: k8s-dashboard
@@ -136,6 +136,7 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "image") sh ${DEP}/ops/tool/image.sh sync "docker.io" "kubernetesui" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "dashboard" v2.3.0;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
