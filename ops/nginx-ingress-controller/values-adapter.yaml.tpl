@@ -5,7 +5,7 @@ hostNetwork: true
 image:
   registry: "${REGISTRY_ENDPOINT}"
   repository: "${REGISTRY_NAMESPACE}/nginx-ingress-controller"
-  tag: 0.48.1-debian-10-r0
+  tag: 1.0.4-debian-10-r20
   pullPolicy: IfNotPresent
   pullSecrets:
     - "${PULL_SECRET_NAME}"
@@ -14,7 +14,7 @@ defaultBackend:
   image:
     registry: "${REGISTRY_ENDPOINT}"
     repository: "${REGISTRY_NAMESPACE}/nginx"
-    tag: 1.21.1-debian-10-r7
+    tag: 1.21.4-debian-10-r0
     pullPolicy: IfNotPresent
     pullSecrets:
       - "${PULL_SECRET_NAME}"
