@@ -28,6 +28,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task mongo --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task mysql --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task phpmyadmin --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task elasticsearch --cmd=ssl
 ops --variable .cfg/dev.yaml -a run --env dev --task elasticsearch --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kibana --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-operator --cmd=install
