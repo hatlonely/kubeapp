@@ -7,6 +7,8 @@ dep:
     version: master
 
 env:
+  default:
+    MONGO_PASSWORD: "{{.mongo.password}}"
   dev:
     K8S_CONTEXT: home-k8s
     NAMESPACE: dev
