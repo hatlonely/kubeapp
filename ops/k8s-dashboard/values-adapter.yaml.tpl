@@ -1,6 +1,6 @@
 image:
   repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/dashboard"
-  tag: v2.3.0
+  tag: v2.4.0
   pullPolicy: IfNotPresent
   pullSecrets:
     - "${PULL_SECRET_NAME}"
