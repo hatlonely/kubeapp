@@ -3,6 +3,7 @@ cluster:
   slaveCount: 2
 
 usePassword: true
+password: "${REDIS_PASSWORD}"
 
 metrics:
   enabled: true

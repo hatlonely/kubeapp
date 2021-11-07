@@ -10,6 +10,7 @@ env:
   default:
     MONGO_PASSWORD: "{{.mongo.password}}"
     MYSQL_PASSWORD: "{{.mysql.password}}"
+    REDIS_PASSWORD: "{{.redis.password}}"
     ELASTICSEARCH_PASSWORD: "{{.mysql.password}}"
     KIBANA_PASSWORD: "{{.mysql.password}}"
   dev:
