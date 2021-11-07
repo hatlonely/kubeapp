@@ -7,6 +7,10 @@ password: "${REDIS_PASSWORD}"
 
 metrics:
   enabled: true
+  image:
+    registry: "${REGISTRY_ENDPOINT}"
+    repository: "${REGISTRY_NAMESPACE}/redis-exporter"
+    tag: 1.4.0-debian-10-r3
 
 image:
   registry: "${REGISTRY_ENDPOINT}"
