@@ -10,6 +10,8 @@ env:
   default:
     MONGO_PASSWORD: "{{.mongo.password}}"
     MYSQL_PASSWORD: "{{.mysql.password}}"
+    ELASTICSEARCH_PASSWORD: "{{.mysql.password}}"
+    KIBANA_PASSWORD: "{{.mysql.password}}"
   dev:
     K8S_CONTEXT: home-k8s
     NAMESPACE: dev
