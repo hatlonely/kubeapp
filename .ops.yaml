@@ -9,6 +9,7 @@ dep:
 env:
   default:
     MONGO_PASSWORD: "{{.mongo.password}}"
+    MYSQL_PASSWORD: "{{.mysql.password}}"
   dev:
     K8S_CONTEXT: home-k8s
     NAMESPACE: dev

@@ -1,5 +1,5 @@
 auth:
-  rootPassword: $(kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode)
+  rootPassword: "${MYSQL_PASSWORD}"
 
 image:
   registry: "${REGISTRY_ENDPOINT}"
