@@ -34,7 +34,7 @@ prometheusOperator:
     tag: v0.17.2
   admissionWebhooks:
     patch:
-      enabled: false
+      enabled: true
       image:
         repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kube-webhook-certgen"
         tag: v1.0
