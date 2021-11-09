@@ -18,6 +18,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task elasticsearch --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task jaeger --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=image
+ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=image
 
 ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=install
@@ -33,6 +34,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task elasticsearch --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kibana --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-operator --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-cluster --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=install
 ```
 
 # 命令
