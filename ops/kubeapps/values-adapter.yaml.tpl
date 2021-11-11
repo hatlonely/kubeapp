@@ -1,3 +1,7 @@
+global:
+  imagePullSecrets:
+    - "${PULL_SECRET_NAME}"
+
 frontend:
   image:
     registry: ${REGISTRY_ENDPOINT}
