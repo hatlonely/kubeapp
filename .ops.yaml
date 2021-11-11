@@ -560,7 +560,7 @@ task:
       NAMESPACE: kubeapps
       app: kubeapps
       chart: bitnami/kubeapps
-      version: 7.5.11
+      version: 7.5.10
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
