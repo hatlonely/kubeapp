@@ -59,6 +59,7 @@ task:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - kubectl get namespaces "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create namespace "${NAMESPACE}"
       - kubectl get namespaces "monitoring" 2>/dev/null 1>&2 || kubectl create namespace "monitoring"
+      - kubectl get namespaces "kubeapps" 2>/dev/null 1>&2 || kubectl create namespace "kubeapps"
   pull-secret:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
@@ -85,6 +86,14 @@ task:
             --docker-username=${REGISTRY_USERNAME} \
             --docker-password=${REGISTRY_PASSWORD} \
             --namespace=monitoring
+        }
+      - |
+        kubectl get secret "${PULL_SECRET_NAME}" -n "kubeapps" 2>/dev/null 1>&2 || { \
+          kubectl create secret docker-registry ${PULL_SECRET_NAME} \
+            --docker-server=${REGISTRY_ENDPOINT} \
+            --docker-username=${REGISTRY_USERNAME} \
+            --docker-password=${REGISTRY_PASSWORD} \
+            --namespace=kubeapps
         }
   helm-add-repo:
     step:
@@ -548,7 +557,7 @@ task:
         default: diff
         validation: x in ["image", "diff", "install", "delete", "upgrade", "status"]
     const:
-      NAMESPACE: monitoring
+      NAMESPACE: kubeapps
       app: kubeapps
       chart: bitnami/kubeapps
       version: 7.5.11
