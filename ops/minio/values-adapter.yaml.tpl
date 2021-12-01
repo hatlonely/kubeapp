@@ -9,10 +9,6 @@ ingress:
   path: /
   hosts:
     - "${MINIO_HOST}"
-#  tls:
-#    - secretName: "${SECRET_NAME}"
-#      hosts:
-#        - "${MINIO_HOST}"
 
 consoleIngress:
   enabled: true
@@ -22,8 +18,8 @@ consoleIngress:
     - "${MINIO_CONSOLE_HOST}"
 
 users:
-  - accessKey: console
-    secretKey: console123
+  - accessKey: ${MINIO_USERNAME}
+    secretKey: ${MINIO_PASSWORD}
     policy: consoleAdmin
 
 replicas: 6
