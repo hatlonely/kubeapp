@@ -36,7 +36,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task kibana --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-operator --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-cluster --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=install
-ops --variable .cfg/dev.yaml -a run --env dev --task minio --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task minio --cmd=diff
 ```
 
 # 命令

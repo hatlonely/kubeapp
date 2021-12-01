@@ -9,10 +9,17 @@ ingress:
   path: /
   hosts:
     - "${MINIO_HOST}"
-  tls:
-    - secretName: "${SECRET_NAME}"
-      hosts:
-        - "${MINIO_HOST}"
+#  tls:
+#    - secretName: "${SECRET_NAME}"
+#      hosts:
+#        - "${MINIO_HOST}"
+
+consoleIngress:
+  enabled: true
+  ingressClassName: "nginx"
+  path: /
+  hosts:
+    - "${MINIO_CONSOLE_HOST}"
 
 users:
   - accessKey: console

@@ -26,6 +26,7 @@ env:
     GRAFANA_HOST: k8s.grafana.hatlonely.com
     JAEGER_HOST: k8s.jaeger.hatlonely.com
     MINIO_HOST: k8s.minio.hatlonely.com
+    MINIO_CONSOLE_HOST: k8s.console.minio.hatlonely.com
     KIBANA_PASSWORD: "{{.kibana.password}}"
     REGISTRY_ENDPOINT: "{{.registry.aliyun.endpoint}}"
     REGISTRY_USERNAME: "{{.registry.aliyun.username}}"
