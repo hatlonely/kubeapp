@@ -414,7 +414,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "status", "upgrade"]
+        validation: x in ["image", "diff", "install", "delete", "status", "upgrade"]
     const:
       NAMESPACE: kube-system
       app: etcd-operator
@@ -425,6 +425,10 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "coreos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "etcd" v3.2.25
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "coreos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "etcd-operator" v0.9.4
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
