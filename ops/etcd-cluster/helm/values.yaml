@@ -1,0 +1,12 @@
+name: etcd-cluster
+replica: 3
+image:
+  repository: quay.io/coreos/etcd
+  tag: v3.2.25
+
+rootPassword: 123456
+username: hatlonely
+password: 123456
+role: all-keys-rw
+
+

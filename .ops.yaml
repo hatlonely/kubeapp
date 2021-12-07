@@ -448,9 +448,11 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
-          "diff") kubectl apply -f ${TMP}/${app}/etcd-cluster.yaml --dry-run=server -o yaml;;
-          "install"|"upgrade") kubectl apply -f ${TMP}/${app}/etcd-cluster.yaml;;
-          "delete") kubectl delete -f ${TMP}/${app}/etcd-cluster.yaml;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${TMP}/${app}/helm" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${TMP}/${app}/helm" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${TMP}/${app}/helm" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
         esac
   kube-prometheus-stack:
     description: |
