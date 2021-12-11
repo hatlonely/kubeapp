@@ -1,7 +1,11 @@
 elasticsearchHosts: "https://security-master:9200"
 
+replicas: 2
+
 ingress:
   enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
   hosts:
     - host: "${KIBANA_HOST}"
       paths:
