@@ -338,7 +338,7 @@ task:
     const:
       app: elasticsearch
       chart: elastic/elasticsearch
-      version: 7.13.4
+      version: 7.15.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
@@ -389,7 +389,7 @@ task:
     const:
       app: kibana
       chart: elastic/kibana
-      version: 7.13.4
+      version: 7.15.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
