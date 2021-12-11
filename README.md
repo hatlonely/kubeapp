@@ -3,6 +3,7 @@
 # 首次安装
 
 ```shell
+ops --variable .cfg/dev.yaml -a run --env dev --task del-master-taint
 ops --variable .cfg/dev.yaml -a run --env dev --task namespace
 ops --variable .cfg/dev.yaml -a run --env dev --task pull-secret
 ops --variable .cfg/dev.yaml -a run --env dev --task helm-add-repo
