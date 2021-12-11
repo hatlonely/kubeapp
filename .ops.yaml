@@ -334,7 +334,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl"]
+        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl", "image", "values"]
     const:
       app: elasticsearch
       chart: elastic/elasticsearch
@@ -344,6 +344,12 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
+          "image")
+            docker login --username="${REGISTRY_USERNAME}" --password="${REGISTRY_PASSWORD}" "${REGISTRY_ENDPOINT}"
+            docker build --tag=${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl ops/elasticsearch/docker -f ops/elasticsearch/docker/Dockerfile-elasticsearch
+            docker push ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
             kubectl get secret elastic-certificates -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic elastic-certificates -n "${NAMESPACE}" --from-file=${TMP}/elasticsearch/elastic-certificates.p12
@@ -385,7 +391,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "password", "values"]
     const:
       app: kibana
       chart: elastic/kibana
@@ -395,6 +401,7 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
             kubectl get secret kibana -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic kibana -n "${NAMESPACE}" --from-literal=encryptionkey="${KIBANA_PASSWORD}"
