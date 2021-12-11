@@ -346,6 +346,9 @@ task:
         case "${cmd}" in
           "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
           "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.elastic.co" "elasticsearch" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "elasticsearch" "${version}"
+            ;;
+          "docker")
             docker login --username="${REGISTRY_USERNAME}" --password="${REGISTRY_PASSWORD}" "${REGISTRY_ENDPOINT}"
             docker build --tag=${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl ops/elasticsearch/docker -f ops/elasticsearch/docker/Dockerfile-elasticsearch
             docker push ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl
@@ -402,6 +405,9 @@ task:
       - |
         case "${cmd}" in
           "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.elastic.co" "kibana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kibana" "${version}"
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
             kubectl get secret kibana -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic kibana -n "${NAMESPACE}" --from-literal=encryptionkey="${KIBANA_PASSWORD}"
