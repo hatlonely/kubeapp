@@ -1,6 +1,10 @@
 etcdCluster:
   size: 3
 
+global:
+  imagePullSecrets:
+    - name: "${PULL_SECRET_NAME}"
+
 etcdCluster:
   image:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/etcd
