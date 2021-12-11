@@ -24,6 +24,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task minio --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-operator --cmd=image
+ops --variable .cfg/dev.yaml -a run --env dev --task cert-manager --cmd=image
 
 ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=install
@@ -41,6 +42,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task etcd-operator --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-cluster --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task minio --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task cert-manager --cmd=install
 ```
 
 # 命令
