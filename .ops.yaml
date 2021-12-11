@@ -334,7 +334,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl", "image", "values"]
+        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl", "image", "docker", "values"]
     const:
       app: elasticsearch
       chart: elastic/elasticsearch
@@ -350,7 +350,7 @@ task:
             ;;
           "docker")
             docker login --username="${REGISTRY_USERNAME}" --password="${REGISTRY_PASSWORD}" "${REGISTRY_ENDPOINT}"
-            docker build --tag=${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl ops/elasticsearch/docker -f ops/elasticsearch/docker/Dockerfile-elasticsearch
+            docker build --tag=${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl ${TMP}/${app}/docker -f ${TMP}/${app}/docker/Dockerfile-elasticsearch
             docker push ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
