@@ -4,6 +4,8 @@ persistence:
 image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch"
 imageTag: "7.15.0-hl"
 imagePullPolicy: "Always"
+imagePullSecrets:
+  - name: "${PULL_SECRET_NAME}"
 
 volumeClaimTemplate:
   storageClassName: "${STORAGE_CLASS}"
