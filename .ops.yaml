@@ -480,7 +480,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "crd", "diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["image", "crds", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: monitoring
       app: kube-prometheus-stack
@@ -504,7 +504,7 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.50.0
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "crd")
+          "crds")
             curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml -o ops/${app}/monitoring.coreos.com_alertmanagerconfigs.yaml
             curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml -o ops/${app}/monitoring.coreos.com_alertmanagers.yaml
             curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml -o ops/${app}/monitoring.coreos.com_podmonitors.yaml
@@ -640,7 +640,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "values"]
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "values", "crds"]
     const:
       NAMESPACE: kube-system
       app: cert-manager
@@ -658,9 +658,14 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-ctl" "v1.6.1"
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-webhook" "v1.6.1"
             ;;
+          "crds") curl https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.crds.yaml -o ops/${app}/crds/cert-manager.crds.yaml;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "install")
+            kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
+            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete -f ops/${app}/crds/cert-manager.crds.yaml;;
         esac
