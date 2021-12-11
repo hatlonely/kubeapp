@@ -394,7 +394,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "password", "values"]
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
     const:
       app: kibana
       chart: elastic/kibana
