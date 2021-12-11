@@ -10,7 +10,7 @@ spec:
   template:
     spec:
       imagePullSecrets:
-        - name: "${PULL_SECRET_NAME}"
+        - name: "{{ .Values.pullSecret }}"
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
