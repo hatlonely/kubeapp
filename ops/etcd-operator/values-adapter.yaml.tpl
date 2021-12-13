@@ -12,7 +12,7 @@ etcdCluster:
     pullPolicy: Always
 
 etcdOperator:
-  replicaCount: 3
+  replicaCount: 1
   image:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/etcd-operator
     tag: v0.9.4
