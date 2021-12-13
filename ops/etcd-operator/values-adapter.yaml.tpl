@@ -12,12 +12,18 @@ etcdCluster:
     pullPolicy: Always
 
 etcdOperator:
+  replicaCount: 3
   image:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/etcd-operator
     tag: v0.9.4
     pullPolicy: Always
   commandArgs:
     cluster-wide: true
+  readinessProbe:
+    enabled: true
+  livenessProbe:
+    initialDelaySeconds: 10
+    enabled: true
 
 backupOperator:
   image:
