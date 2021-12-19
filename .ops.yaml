@@ -397,6 +397,7 @@ task:
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
     const:
+      SECRET_NAME: kibana-tls
       app: kibana
       chart: elastic/kibana
       version: 7.15.0
@@ -662,10 +663,14 @@ task:
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
             kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
-            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
+            kubectl apply -f ${TMP}/${app}/cluster-issuer.yaml
+            ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
+            kubectl delete -f ${TMP}/${app}/cluster-issuer.yaml
             helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete -f ops/${app}/crds/cert-manager.crds.yaml;;
+            kubectl delete -f ops/${app}/crds/cert-manager.crds.yaml
+            ;;
         esac
