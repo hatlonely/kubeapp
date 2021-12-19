@@ -74,6 +74,9 @@ grafana:
       - secretName: "${SECRET_NAME}"
         hosts:
           - "${GRAFANA_HOST}"
+  grafana.ini:
+    server:
+      domain: ${GRAFANA_HOST}
 
 prometheus-node-exporter:
   image:

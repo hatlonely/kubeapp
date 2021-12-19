@@ -2,7 +2,7 @@ persistence:
   enable: true
 
 image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch"
-imageTag: "7.15.0-hl"
+imageTag: "7.15.0"
 imagePullPolicy: "Always"
 imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
