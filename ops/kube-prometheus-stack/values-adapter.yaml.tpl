@@ -67,7 +67,6 @@ grafana:
       cert-manager.io/cluster-issuer: letsencrypt-http01
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
-    ingressClassName: nginx
     path: /
     hosts:
       - "${GRAFANA_HOST}"
