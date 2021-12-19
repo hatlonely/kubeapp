@@ -616,6 +616,7 @@ task:
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "password"]
     const:
+      SECRET_NAME: minio-console-tls
       app: minio
       chart: minio/minio
       version: 3.3.0

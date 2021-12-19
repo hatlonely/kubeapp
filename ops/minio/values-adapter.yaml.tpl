@@ -12,10 +12,17 @@ ingress:
 
 consoleIngress:
   enabled: true
-  ingressClassName: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
   path: /
   hosts:
     - "${MINIO_CONSOLE_HOST}"
+  tls:
+    - secretName: "${SECRET_NAME}"
+      hosts:
+        - "${MINIO_CONSOLE_HOST}"
 
 users:
   - accessKey: ${MINIO_USERNAME}
