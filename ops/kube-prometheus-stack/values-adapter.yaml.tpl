@@ -63,6 +63,10 @@ grafana:
       tag: 1.12.2
   ingress:
     enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-http01
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
     ingressClassName: nginx
     path: /
     hosts:
