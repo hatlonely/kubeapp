@@ -9,7 +9,7 @@ dep:
 env:
   default:
     MONGO_PASSWORD: "{{.mongo.rootPassword}}"
-    MYSQL_PASSWORD: "{{.mysql.password}}"
+    MYSQL_PASSWORD: "{{.mysql.rootPassword}}"
     REDIS_PASSWORD: "{{.redis.password}}"
     ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
     KIBANA_PASSWORD: "{{.kibana.password}}"
