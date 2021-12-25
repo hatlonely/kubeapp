@@ -26,6 +26,7 @@ env:
     MINIO_CONSOLE_HOST: k8s.console.minio.${DOMAIN}
     MINIO_TLS: minio-tls
     MINIO_CONSOLE_TLS: minio-console-tls
+    PHPMYADMIN_TLS: phpmyadmin-tls
   dev:
     K8S_CONTEXT: home-k8s
     NAMESPACE: dev
