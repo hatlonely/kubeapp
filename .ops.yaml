@@ -634,7 +634,15 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete pvc export-minio-0 -n dev
+            kubectl delete pvc export-minio-1 -n dev
+            kubectl delete pvc export-minio-2 -n dev
+            kubectl delete pvc export-minio-3 -n dev
+            kubectl delete pvc export-minio-4 -n dev
+            kubectl delete pvc export-minio-5 -n dev
+            ;;
         esac
   cert-manager:
     description: |
