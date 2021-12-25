@@ -6,9 +6,10 @@ persistence:
 ingress:
   enabled: true
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-http01
     kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-http01
     kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
   path: /
   hosts:
     - "${MINIO_HOST}"
@@ -20,9 +21,10 @@ ingress:
 consoleIngress:
   enabled: true
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-http01
     kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-http01
     kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
   path: /
   hosts:
     - "${MINIO_CONSOLE_HOST}"
