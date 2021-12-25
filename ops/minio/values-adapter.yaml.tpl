@@ -5,10 +5,17 @@ persistence:
 
 ingress:
   enabled: true
-  ingressClassName: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
   path: /
   hosts:
     - "${MINIO_HOST}"
+  tls:
+    - secretName: "${MINIO_TLS}"
+      hosts:
+        - "${MINIO_HOST}"
 
 consoleIngress:
   enabled: true
@@ -20,7 +27,7 @@ consoleIngress:
   hosts:
     - "${MINIO_CONSOLE_HOST}"
   tls:
-    - secretName: "${SECRET_NAME}"
+    - secretName: "${MINIO_CONSOLE_TLS}"
       hosts:
         - "${MINIO_CONSOLE_HOST}"
 

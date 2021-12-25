@@ -24,6 +24,8 @@ env:
     JAEGER_HOST: k8s.jaeger.${DOMAIN}
     MINIO_HOST: k8s.minio.${DOMAIN}
     MINIO_CONSOLE_HOST: k8s.console.minio.${DOMAIN}
+    MINIO_TLS: minio-tls
+    MINIO_CONSOLE_TLS: minio-console-tls
   dev:
     K8S_CONTEXT: home-k8s
     NAMESPACE: dev
@@ -616,7 +618,6 @@ task:
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "password"]
     const:
-      SECRET_NAME: minio-console-tls
       app: minio
       chart: minio/minio
       version: 3.3.0
