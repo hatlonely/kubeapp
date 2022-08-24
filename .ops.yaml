@@ -38,7 +38,7 @@ env:
     REGISTRY_PASSWORD: "{{.registry.aliyun.password}}"
     REGISTRY_NAMESPACE: "{{.registry.aliyun.namespace}}"
   ali:
-    K8S_CONTEXT: weboffice-regression
+    K8S_CONTEXT: weboffice-regression-cn-shanghai
     NAMESPACE: hatlonely
     STORAGE_CLASS: alicloud-disk-topology
     SECRET_NAME: k8s-secret
@@ -74,6 +74,7 @@ task:
             --docker-password=${REGISTRY_PASSWORD} \
             --namespace=${NAMESPACE}
         }
+        kubectl patch serviceaccount default -n "${NAMESPACE}" -p "{\"imagePullSecrets\": [ { \"name\": \"${PULL_SECRET_NAME}\" } ] }"
       - |
         kubectl get secret "${PULL_SECRET_NAME}" -n "kube-system" 2>/dev/null 1>&2 || { \
           kubectl create secret docker-registry ${PULL_SECRET_NAME} \
@@ -232,15 +233,16 @@ task:
     const:
       app: redis
       chart: bitnami/redis
-      version: 10.8.1
+      version: 17.1.2
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis" 5.0.7-debian-10-r32
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis-exporter" 1.4.0-debian-10-r3
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis" 7.0.4-debian-11-r11
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis-exporter" 1.43.0-debian-11-r18
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis-sentinel" 7.0.4-debian-11-r8
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
