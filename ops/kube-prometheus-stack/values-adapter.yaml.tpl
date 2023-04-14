@@ -31,14 +31,13 @@ prometheusOperator:
     repository: "${REGISTRY_NAMESPACE}/prometheus-config-reloader"
   thanosImage:
     registry: "${REGISTRY_ENDPOINT}"
-    repository: quay.io/thanos/thanos
+    repository: "${REGISTRY_NAMESPACE}/thanos"
   admissionWebhooks:
     patch:
       enabled: true
       image:
         registry: "${REGISTRY_ENDPOINT}"
         repository: "${REGISTRY_NAMESPACE}/kube-webhook-certgen"
-        tag: v20221220-controller-v1.5.1-58-g787ea74b6
 
 kube-state-metrics:
   image:
