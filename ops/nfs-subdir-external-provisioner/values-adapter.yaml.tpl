@@ -10,7 +10,7 @@ imagePullSecrets:
 
 nfs:
   server: 192.168.0.101
-  path: /nfs/data2
+  path: /nfs/data
   mountOptions:
     - "hard"
     - "nfsvers=3"
