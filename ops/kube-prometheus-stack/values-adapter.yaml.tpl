@@ -47,6 +47,7 @@ kube-state-metrics:
     - name: "${PULL_SECRET_NAME}"
 
 grafana:
+  adminPassword: "${GRAFANA_PASSWORD}"
   image:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/grafana"
     pullSecrets:

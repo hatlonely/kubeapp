@@ -45,16 +45,6 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.63.0
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "crds")
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml -o ops/${app}/crds/monitoring.coreos.com_alertmanagerconfigs.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml -o ops/${app}/crds/monitoring.coreos.com_alertmanagers.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml -o ops/${app}/crds/monitoring.coreos.com_podmonitors.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml -o ops/${app}/crds/monitoring.coreos.com_probes.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml -o ops/${app}/crds/monitoring.coreos.com_prometheuses.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml -o ops/${app}/crds/monitoring.coreos.com_prometheusrules.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml -o ops/${app}/crds/monitoring.coreos.com_servicemonitors.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml -o ops/${app}/crds/monitoring.coreos.com_thanosrulers.yaml
-            ;;
           "install")
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             ;;

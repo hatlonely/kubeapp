@@ -21,6 +21,7 @@ env:
     KIBANA_PASSWORD: "{{.kibana.password}}"
     MINIO_USERNAME: "{{.minio.username}}"
     MINIO_PASSWORD: "{{.minio.password}}"
+    GRAFANA_PASSWORD: "{{.grafana.password}}"
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     DOMAIN: hatlonely.com
     DASHBOARD_HOST: k8s.dashboard.${DOMAIN}
