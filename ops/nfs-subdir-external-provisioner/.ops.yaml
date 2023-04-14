@@ -7,7 +7,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["pull", "image", "diff", "install", "delete", "upgrade", "status"]
     const:
       NAMESPACE: kube-system
       app: nfs-subdir-external-provisioner
@@ -17,9 +17,11 @@ task:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
-        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
           "image")
             sh ${DEP}/ops/tool/image.sh sync "k8s.gcr.io" "sig-storage" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nfs-subdir-external-provisioner" v4.0.2
             ;;
