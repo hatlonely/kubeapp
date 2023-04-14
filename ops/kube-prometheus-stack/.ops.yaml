@@ -1,0 +1,79 @@
+task:
+  kube-prometheus-stack:
+    description: |
+      https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+      https://github.com/prometheus-operator/prometheus-operator
+      https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+      https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics
+      https://github.com/grafana/helm-charts/tree/main/charts/grafana
+      https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["image", "crds", "diff", "install", "delete", "upgrade", "status", "password"]
+    const:
+      NAMESPACE: monitoring
+      SECRET_NAME: grafana-tls
+      app: kube-prometheus-stack
+      chart: prometheus-community/kube-prometheus-stack
+      version: 45.10.1
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
+          "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "k8s.gcr.io" "ingress-nginx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-webhook-certgen" v1.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "thanos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "thanos" v0.17.2
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-state-metrics" 2.1.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "kiwigrid" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "k8s-sidecar" 1.12.2
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "grafana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "grafana" 8.0.5
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "node-exporter" v1.2.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus" v2.28.1
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-operator" v0.50.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "alertmanager" v0.22.2
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.50.0
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "crds")
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml -o ops/${app}/crds/monitoring.coreos.com_alertmanagerconfigs.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml -o ops/${app}/crds/monitoring.coreos.com_alertmanagers.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml -o ops/${app}/crds/monitoring.coreos.com_podmonitors.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml -o ops/${app}/crds/monitoring.coreos.com_probes.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml -o ops/${app}/crds/monitoring.coreos.com_prometheuses.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml -o ops/${app}/crds/monitoring.coreos.com_prometheusrules.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml -o ops/${app}/crds/monitoring.coreos.com_servicemonitors.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml -o ops/${app}/crds/monitoring.coreos.com_thanosrulers.yaml
+            ;;
+          "install")
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_alertmanagerconfigs.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_alertmanagers.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_podmonitors.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_probes.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_prometheuses.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_prometheusrules.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_servicemonitors.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_thanosrulers.yaml
+            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
+            ;;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
+            kubectl delete crd alertmanagers.monitoring.coreos.com
+            kubectl delete crd podmonitors.monitoring.coreos.com
+            kubectl delete crd probes.monitoring.coreos.com
+            kubectl delete crd prometheuses.monitoring.coreos.com
+            kubectl delete crd prometheusrules.monitoring.coreos.com
+            kubectl delete crd servicemonitors.monitoring.coreos.com
+            kubectl delete crd thanosrulers.monitoring.coreos.com
+            ;;
+          "password")
+            kubectl get secret kube-prometheus-stack-grafana -n "${NAMESPACE}" -o jsonpath="{.data.admin-user}" | base64 --decode; echo
+            kubectl get secret kube-prometheus-stack-grafana -n "${NAMESPACE}" -o jsonpath="{.data.admin-password}" | base64 --decode; echo
+            ;;
+        esac
