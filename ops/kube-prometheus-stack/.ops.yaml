@@ -22,9 +22,11 @@ task:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
-        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
           "image")
             sh ${DEP}/ops/tool/image.sh sync "k8s.gcr.io" "ingress-nginx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-webhook-certgen" v1.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "thanos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "thanos" v0.17.2
