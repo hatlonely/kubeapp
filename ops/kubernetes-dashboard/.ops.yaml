@@ -27,9 +27,6 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password")
-            kubectl get serviceaccount dashboard-admin -n "${NAMESPACE}" || kubectl create serviceaccount dashboard-admin -n "${NAMESPACE}"
-            kubectl get clusterrolebinding dashboard-admin || kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
-            kubectl get serviceaccounttoken dashboard-admin -n "${NAMESPACE}" || kubectl create serviceaccounttoken dashboard-admin -n "${NAMESPACE}"
-            ADMIN_SECRET=$(kubectl get secrets -n "${NAMESPACE}" | grep dashboard-admin | awk '{print $1}')
-            kubectl get secret -n "${NAMESPACE}" ${ADMIN_SECRET} -o jsonpath="{.data.token}" | base64 --decode; echo
+            kubectl apply -f ops/kubernetes-dashboard/service-account.yaml
+            kubectl get secret -n "${NAMESPACE}" admin-user-token -o jsonpath="{.data.token}" | base64 --decode; echo
         esac
