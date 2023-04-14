@@ -34,7 +34,7 @@ task:
           "image")
             sh ${DEP}/ops/tool/image.sh sync "k8s.gcr.io" "ingress-nginx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-webhook-certgen" v20221220-controller-v1.5.1-58-g787ea74b6
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "thanos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "thanos" v0.17.2
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-state-metrics" 2.1.0
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-state-metrics" v2.8.2
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "kiwigrid" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "k8s-sidecar" 1.22.0
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "grafana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "grafana" 9.4.7
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "node-exporter" v1.5.0
