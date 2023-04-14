@@ -120,32 +120,6 @@ task:
       - helm repo add minio https://charts.min.io/
       - helm repo add jetstack https://charts.jetstack.io
       - helm repo update
-  nfs-subdir-external-provisioner:
-    description: https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/tree/master/charts/nfs-subdir-external-provisioner
-    args:
-      cmd:
-        type: string
-        default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
-    const:
-      NAMESPACE: kube-system
-      app: nfs-subdir-external-provisioner
-      chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
-      version: 4.0.13
-    step:
-      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
-      - |
-        case "${cmd}" in
-          "image")
-            sh ${DEP}/ops/tool/image.sh sync "k8s.gcr.io" "sig-storage" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nfs-subdir-external-provisioner" v4.0.2
-            ;;
-          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete") helm delete -n "${NAMESPACE}" "${app}"
-        esac
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
     args:
