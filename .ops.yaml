@@ -30,6 +30,7 @@ env:
     MINIO_TLS: minio-tls
     MINIO_CONSOLE_TLS: minio-console-tls
     PHPMYADMIN_TLS: phpmyadmin-tls
+    HELM_HOME: "${TMP}"
   dev:
     K8S_CONTEXT: kubernetes-admin@kubernetes
     NAMESPACE: dev
@@ -40,6 +41,7 @@ env:
     REGISTRY_USERNAME: "{{.registry.aliyun.username}}"
     REGISTRY_PASSWORD: "{{.registry.aliyun.password}}"
     REGISTRY_NAMESPACE: "{{.registry.aliyun.namespace}}"
+    HELM_HOME: "$HOME/k8s/helm"
   ali:
     K8S_CONTEXT: kubernetes-admin@kubernetes
     NAMESPACE: hatlonely
