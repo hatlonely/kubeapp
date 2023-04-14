@@ -39,6 +39,7 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "grafana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "grafana" 9.4.7
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "node-exporter" v1.5.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus" v2.28.1
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus" v2.42.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-operator" v0.63.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "alertmanager" v0.25.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.63.0
