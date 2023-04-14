@@ -48,14 +48,12 @@ kube-state-metrics:
 
 grafana:
   image:
-    registry: "${REGISTRY_ENDPOINT}"
-    repository: "${REGISTRY_NAMESPACE}/grafana"
+    repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/grafana"
     pullSecrets:
       - "${PULL_SECRET_NAME}"
   sidecar:
     image:
-      registry: "${REGISTRY_ENDPOINT}"
-      repository: "${REGISTRY_NAMESPACE}/k8s-sidecar"
+      repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/k8s-sidecar"
   ingress:
     enabled: true
     annotations:
