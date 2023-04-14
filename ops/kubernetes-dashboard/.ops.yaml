@@ -17,6 +17,7 @@ task:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
           "image") sh ${DEP}/ops/tool/image.sh sync "docker.io" "kubernetesui" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "dashboard" v2.7.0;;
