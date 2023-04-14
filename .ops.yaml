@@ -7,35 +7,43 @@ dep:
     version: master
 
 env:
+  default:
+    MONGO_PASSWORD: "{{.mongo.rootPassword}}"
+    MYSQL_PASSWORD: "{{.mysql.rootPassword}}"
+    REDIS_PASSWORD: "{{.redis.password}}"
+    ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
+    KIBANA_PASSWORD: "{{.kibana.password}}"
+    MINIO_USERNAME: "{{.minio.username}}"
+    MINIO_PASSWORD: "{{.minio.password}}"
+    PULL_SECRET_NAME: "hatlonely-pull-secret"
+    DOMAIN: hatlonely.com
+    DASHBOARD_HOST: k8s.dashboard.${DOMAIN}
+    KIBANA_HOST: k8s.kibana.${DOMAIN}
+    PHPMYADMIN_HOST: k8s.phpmyadmin.${DOMAIN}
+    GRAFANA_HOST: k8s.grafana.${DOMAIN}
+    JAEGER_HOST: k8s.jaeger.${DOMAIN}
+    MINIO_HOST: k8s.minio.${DOMAIN}
+    MINIO_CONSOLE_HOST: k8s.console.minio.${DOMAIN}
+    MINIO_TLS: minio-tls
+    MINIO_CONSOLE_TLS: minio-console-tls
+    PHPMYADMIN_TLS: phpmyadmin-tls
   dev:
     K8S_CONTEXT: home-k8s
     NAMESPACE: dev
     STORAGE_CLASS: nfs-client
     SECRET_NAME: k8s-secret
     PULL_SECRET_NAME: "hatlonely-pull-secret"
-    ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
-    DASHBOARD_HOST: k8s.dashboard.hatlonely.com
-    KIBANA_HOST: k8s.kibana.hatlonely.com
-    PHPMYADMIN_HOST: k8s.phpmyadmin.hatlonely.com
-    GRAFANA_HOST: k8s.grafana.hatlonely.com
-    JAEGER_HOST: k8s.jaeger.hatlonely.com
-    KIBANA_PASSWORD: "{{.kibana.password}}"
     REGISTRY_ENDPOINT: "{{.registry.aliyun.endpoint}}"
     REGISTRY_USERNAME: "{{.registry.aliyun.username}}"
     REGISTRY_PASSWORD: "{{.registry.aliyun.password}}"
     REGISTRY_NAMESPACE: "{{.registry.aliyun.namespace}}"
   ali:
-    K8S_CONTEXT: weboffice-regression
+    K8S_CONTEXT: weboffice-regression-cn-shanghai
     NAMESPACE: hatlonely
     STORAGE_CLASS: alicloud-disk-topology
     SECRET_NAME: k8s-secret
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
-    DASHBOARD_HOST: k8s.dashboard.hatlonely.com
-    KIBANA_HOST: k8s.kibana.hatlonely.com
-    PHPMYADMIN_HOST: k8s.phpmyadmin.hatlonely.com
-    GRAFANA_HOST: k8s.grafana.hatlonely.com
-    JAEGER_HOST: k8s.jaeger.hatlonely.com
     KIBANA_PASSWORD: "{{.kibana.password}}"
     REGISTRY_ENDPOINT: "{{.registry.aliyun.endpoint}}"
     REGISTRY_USERNAME: "{{.registry.aliyun.username}}"
@@ -45,6 +53,7 @@ env:
 task:
   del-master-taint:
     step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - kubectl taint nodes node0 "node-role.kubernetes.io/master=:NoSchedule-"
       - kubectl taint nodes node1 "node-role.kubernetes.io/master=:NoSchedule-"
       - kubectl taint nodes node2 "node-role.kubernetes.io/master=:NoSchedule-"
@@ -53,6 +62,7 @@ task:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - kubectl get namespaces "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create namespace "${NAMESPACE}"
       - kubectl get namespaces "monitoring" 2>/dev/null 1>&2 || kubectl create namespace "monitoring"
+      - kubectl get namespaces "kubeapps" 2>/dev/null 1>&2 || kubectl create namespace "kubeapps"
   pull-secret:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
@@ -64,6 +74,7 @@ task:
             --docker-password=${REGISTRY_PASSWORD} \
             --namespace=${NAMESPACE}
         }
+        kubectl patch serviceaccount default -n "${NAMESPACE}" -p "{\"imagePullSecrets\": [ { \"name\": \"${PULL_SECRET_NAME}\" } ] }"
       - |
         kubectl get secret "${PULL_SECRET_NAME}" -n "kube-system" 2>/dev/null 1>&2 || { \
           kubectl create secret docker-registry ${PULL_SECRET_NAME} \
@@ -80,6 +91,14 @@ task:
             --docker-password=${REGISTRY_PASSWORD} \
             --namespace=monitoring
         }
+      - |
+        kubectl get secret "${PULL_SECRET_NAME}" -n "kubeapps" 2>/dev/null 1>&2 || { \
+          kubectl create secret docker-registry ${PULL_SECRET_NAME} \
+            --docker-server=${REGISTRY_ENDPOINT} \
+            --docker-username=${REGISTRY_USERNAME} \
+            --docker-password=${REGISTRY_PASSWORD} \
+            --namespace=kubeapps
+        }
   helm-add-repo:
     step:
       - helm repo add stable https://charts.helm.sh/stable
@@ -89,6 +108,8 @@ task:
       - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
       - helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
       - helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+      - helm repo add minio https://charts.min.io/
+      - helm repo add jetstack https://charts.jetstack.io
       - helm repo update
   nginx-ingress-controller:
     description: https://github.com/bitnami/charts/tree/master/bitnami/nginx-ingress-controller
@@ -101,15 +122,15 @@ task:
       NAMESPACE: kube-system
       app: nginx-ingress-controller
       chart: bitnami/nginx-ingress-controller
-      version: 7.6.17
+      version: 9.0.4
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nginx-ingress-controller" 0.48.1-debian-10-r0
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nginx" 1.21.1-debian-10-r7
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nginx-ingress-controller" 1.0.4-debian-10-r20
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nginx" 1.21.4-debian-10-r0
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
@@ -119,7 +140,7 @@ task:
         esac
   k8s-dashboard:
     description: |
-      https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard/4.3.1
+      https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard/5.0.4
       https://github.com/kubernetes/dashboard/tree/master/aio/deploy/helm-chart/kubernetes-dashboard
     args:
       cmd:
@@ -130,13 +151,13 @@ task:
       NAMESPACE: kube-system
       app: k8s-dashboard
       chart: k8s-dashboard/kubernetes-dashboard
-      version: 4.3.1
+      version: 5.0.4
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
-          "image") sh ${DEP}/ops/tool/image.sh sync "docker.io" "kubernetesui" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "dashboard" v2.3.0;;
+          "image") sh ${DEP}/ops/tool/image.sh sync "docker.io" "kubernetesui" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "dashboard" v2.4.0;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
@@ -212,14 +233,16 @@ task:
     const:
       app: redis
       chart: bitnami/redis
-      version: 10.8.1
+      version: 17.1.2
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis" 5.0.7-debian-10-r32
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis" 7.0.4-debian-11-r11
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis-exporter" 1.43.0-debian-11-r18
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis-sentinel" 7.0.4-debian-11-r8
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
@@ -317,16 +340,25 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl"]
+        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl", "image", "docker", "values"]
     const:
       app: elasticsearch
       chart: elastic/elasticsearch
-      version: 7.13.4
+      version: 7.15.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.elastic.co" "elasticsearch" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "elasticsearch" "${version}"
+            ;;
+          "docker")
+            docker login --username="${REGISTRY_USERNAME}" --password="${REGISTRY_PASSWORD}" "${REGISTRY_ENDPOINT}"
+            docker build --tag=${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl ${TMP}/${app}/docker -f ${TMP}/${app}/docker/Dockerfile-elasticsearch
+            docker push ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:${version}-hl
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
             kubectl get secret elastic-certificates -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic elastic-certificates -n "${NAMESPACE}" --from-file=${TMP}/elasticsearch/elastic-certificates.p12
@@ -368,16 +400,21 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
     const:
+      SECRET_NAME: kibana-tls
       app: kibana
       chart: elastic/kibana
-      version: 7.13.4
+      version: 7.15.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.elastic.co" "kibana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kibana" "${version}"
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
             kubectl get secret kibana -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic kibana -n "${NAMESPACE}" --from-literal=encryptionkey="${KIBANA_PASSWORD}"
@@ -398,7 +435,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "status", "upgrade"]
+        validation: x in ["image", "diff", "install", "delete", "status", "upgrade"]
     const:
       NAMESPACE: kube-system
       app: etcd-operator
@@ -409,6 +446,10 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "coreos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "etcd" v3.2.25
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "coreos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "etcd-operator" v0.9.4
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
@@ -428,12 +469,37 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
-          "diff") kubectl apply -f ${TMP}/${app}/etcd-cluster.yaml --dry-run=server -o yaml;;
-          "install"|"upgrade") kubectl apply -f ${TMP}/${app}/etcd-cluster.yaml;;
-          "delete") kubectl delete -f ${TMP}/${app}/etcd-cluster.yaml;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${TMP}/${app}/helm" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${TMP}/${app}/helm" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${TMP}/${app}/helm" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+        esac
+  etcd:
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["image", "diff", "install", "delete", "upgrade"]
+    const:
+      app: etcd
+      chart: bitnami/etcd
+      version: 8.3.2
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image") sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "etcd" 3.5.4-debian-11-r8;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
         esac
   kube-prometheus-stack:
     description: |
+      https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
       https://github.com/prometheus-operator/prometheus-operator
       https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
       https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics
@@ -443,47 +509,50 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "crd", "diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["image", "crds", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: monitoring
+      SECRET_NAME: grafana-tls
       app: kube-prometheus-stack
       chart: prometheus-community/kube-prometheus-stack
-      version: 17.0.2
+      version: 19.2.3
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")
+            sh ${DEP}/ops/tool/image.sh sync "k8s.gcr.io" "ingress-nginx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-webhook-certgen" v1.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "thanos" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "thanos" v0.17.2
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kube-state-metrics" 2.1.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "kiwigrid" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "k8s-sidecar" 1.12.2
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "grafana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "grafana" 8.0.5
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "node-exporter" v1.2.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus" v2.28.1
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-operator" v0.49.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-operator" v0.50.0
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "alertmanager" v0.22.2
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.49.0
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "prometheus-operator" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "prometheus-config-reloader" v0.50.0
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "crd")
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml -o ops/${app}/monitoring.coreos.com_alertmanagerconfigs.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml -o ops/${app}/monitoring.coreos.com_alertmanagers.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml -o ops/${app}/monitoring.coreos.com_podmonitors.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml -o ops/${app}/monitoring.coreos.com_probes.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml -o ops/${app}/monitoring.coreos.com_prometheuses.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml -o ops/${app}/monitoring.coreos.com_prometheusrules.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml -o ops/${app}/monitoring.coreos.com_servicemonitors.yaml
-            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml -o ops/${app}/monitoring.coreos.com_thanosrulers.yaml
+          "crds")
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml -o ops/${app}/crds/monitoring.coreos.com_alertmanagerconfigs.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml -o ops/${app}/crds/monitoring.coreos.com_alertmanagers.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml -o ops/${app}/crds/monitoring.coreos.com_podmonitors.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml -o ops/${app}/crds/monitoring.coreos.com_probes.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml -o ops/${app}/crds/monitoring.coreos.com_prometheuses.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml -o ops/${app}/crds/monitoring.coreos.com_prometheusrules.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml -o ops/${app}/crds/monitoring.coreos.com_servicemonitors.yaml
+            curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml -o ops/${app}/crds/monitoring.coreos.com_thanosrulers.yaml
             ;;
           "install")
-            kubectl apply -f ops/${app}/monitoring.coreos.com_alertmanagerconfigs.yaml
-            kubectl apply -f ops/${app}/monitoring.coreos.com_alertmanagers.yaml
-            kubectl apply -f ops/${app}/monitoring.coreos.com_podmonitors.yaml
-            kubectl apply -f ops/${app}/monitoring.coreos.com_probes.yaml
-            kubectl apply -f ops/${app}/monitoring.coreos.com_prometheuses.yaml
-            kubectl apply -f ops/${app}/monitoring.coreos.com_prometheusrules.yaml
-            kubectl apply -f ops/${app}/monitoring.coreos.com_servicemonitors.yaml
-            kubectl apply -f ops/${app}/monitoring.coreos.com_thanosrulers.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_alertmanagerconfigs.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_alertmanagers.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_podmonitors.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_probes.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_prometheuses.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_prometheusrules.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_servicemonitors.yaml
+            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_thanosrulers.yaml
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
@@ -530,4 +599,115 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
+        esac
+  kubeapps:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/kubeapps
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status"]
+    const:
+      NAMESPACE: kubeapps
+      app: kubeapps
+      chart: bitnami/kubeapps
+      version: 7.5.10
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nginx" 1.21.3-debian-10-r50
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-dashboard" 2.4.1-debian-10-r18
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-apprepository-controller" 2.4.1-scratch-r1
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-asset-syncer" 2.4.1-scratch-r1
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-kubeops" 2.4.1-scratch-r1
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-assetsvc" 2.4.1-scratch-r1
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "oauth2-proxy" 7.2.0-debian-10-r5
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-pinniped-proxy" 2.4.1-debian-10-r21
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-apis" 2.4.1-debian-10-r21
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+        esac
+  minio:
+    description: |
+      https://github.com/minio/minio/tree/master/helm/minio
+      https://docs.min.io/docs/minio-client-quickstart-guide.html
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "password"]
+    const:
+      app: minio
+      chart: minio/minio
+      version: 3.3.0
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "minio" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "mc" "RELEASE.2021-11-16T20-37-36Z"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "minio" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "minio" "RELEASE.2021-11-24T23-19-33Z"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete pvc export-minio-0 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-1 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-2 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-3 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-4 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-5 -n "${NAMESPACE}"
+            ;;
+        esac
+  cert-manager:
+    description: |
+      https://github.com/jetstack/cert-manager/tree/v1.6.1/deploy/charts/cert-manager
+      https://artifacthub.io/packages/helm/cert-manager/cert-manager
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "values", "crds"]
+    const:
+      NAMESPACE: kube-system
+      app: cert-manager
+      chart: jetstack/cert-manager
+      version: v1.6.1
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "values") curl https://raw.githubusercontent.com/jetstack/cert-manager/v1.6.1/deploy/charts/cert-manager/values.yaml -o ops/${app}/values.yaml;;
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-controller" "v1.6.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-cainjector" "v1.6.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-ctl" "v1.6.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-webhook" "v1.6.1"
+            ;;
+          "crds") curl https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.crds.yaml -o ops/${app}/crds/cert-manager.crds.yaml;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install")
+            kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
+            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
+            kubectl apply -f ${TMP}/${app}/cluster-issuer.yaml
+            ;;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete")
+            kubectl delete -f ${TMP}/${app}/cluster-issuer.yaml
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete -f ops/${app}/crds/cert-manager.crds.yaml
+            ;;
         esac

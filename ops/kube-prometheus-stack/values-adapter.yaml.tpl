@@ -25,10 +25,20 @@ alertmanager:
 prometheusOperator:
   image:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus-operator"
-    tag: v0.49.0
+    tag: v0.50.0
   prometheusConfigReloaderImage:
     repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus-config-reloader"
-    tag: v0.49.0
+    tag: v0.50.0
+  thanosImage:
+    repository: quay.io/thanos/thanos
+    tag: v0.17.2
+  admissionWebhooks:
+    patch:
+      enabled: true
+      image:
+        repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kube-webhook-certgen"
+        tag: v1.0
+        sha: ""
   tolerations:
     - key: "node-role.kubernetes.io/master"
       operator: "Exists"
@@ -53,6 +63,10 @@ grafana:
       tag: 1.12.2
   ingress:
     enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-http01
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
     path: /
     hosts:
       - "${GRAFANA_HOST}"
@@ -60,6 +74,9 @@ grafana:
       - secretName: "${SECRET_NAME}"
         hosts:
           - "${GRAFANA_HOST}"
+  grafana.ini:
+    server:
+      domain: ${GRAFANA_HOST}
 
 prometheus-node-exporter:
   image:

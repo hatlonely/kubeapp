@@ -16,5 +16,5 @@ persistence:
   size: 50Gi
 
 auth:
-  rootPassword: $(kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode)
+  rootPassword: "${MONGO_PASSWORD}"
 

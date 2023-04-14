@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: etcd-cluster-create-user-job
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: "{{ .Values.pullSecret }}"
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: etcd-cluster-create-user-job
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            until [ $(etcdctl --endpoints "${ETCD_ENDPOINT}" cluster-health | grep healthy | grep member | wc -l) == "{{ .Values.replica }}" ]; do
+              sleep 1
+              echo "waiting cluster health"
+            done
+
+            etcdctl --endpoints "${ETCD_ENDPOINT}" user add root:${ETCD_ROOT_PASSWORD}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" role add ${ETCD_ROLE}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" role grant ${ETCD_ROLE} -path '/*' -readwrite
+            etcdctl --endpoints "${ETCD_ENDPOINT}" user add ${ETCD_USERNAME}:${ETCD_PASSWORD}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" user grant ${ETCD_USERNAME} -roles ${ETCD_ROLE}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" auth enable
+            etcdctl --endpoints "${ETCD_ENDPOINT}" -u root:${ETCD_ROOT_PASSWORD} role remove guest
+            export ETCDCTL_API=3
+            etcdctl --endpoints "${ETCD_ENDPOINT}" user add root:${ETCD_ROOT_PASSWORD}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" role add ${ETCD_ROLE}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" role grant-permission ${ETCD_ROLE} readwrite '/' --prefix
+            etcdctl --endpoints "${ETCD_ENDPOINT}" user add ${ETCD_USERNAME}:${ETCD_PASSWORD}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" user grant-role ${ETCD_USERNAME} ${ETCD_ROLE}
+            etcdctl --endpoints "${ETCD_ENDPOINT}" auth enable
+        env:
+          - name: ETCD_ROOT_PASSWORD
+            value: "{{ .Values.rootPassword }}"
+          - name: ETCD_USERNAME
+            value: "{{ .Values.username }}"
+          - name: ETCD_PASSWORD
+            value: "{{ .Values.password }}"
+          - name: ETCD_ROLE
+            value: "{{ .Values.role }}"
+          - name: ETCD_ENDPOINT
+            value: http://{{ .Values.name }}-client.{{ .Release.Namespace }}:2379
+      restartPolicy: Never

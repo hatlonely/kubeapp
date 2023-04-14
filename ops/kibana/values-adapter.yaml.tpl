@@ -1,7 +1,18 @@
 elasticsearchHosts: "https://security-master:9200"
 
+replicas: 2
+
+image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kibana"
+imageTag: "7.15.0"
+imagePullSecrets:
+  - name: "${PULL_SECRET_NAME}"
+
 ingress:
   enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
   hosts:
     - host: "${KIBANA_HOST}"
       paths:
