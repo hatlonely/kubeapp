@@ -9,7 +9,7 @@ task:
         default: diff
         validation: x in ["pull", "image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
-      NAMESPACE: kube-system
+      NAMESPACE: kubernetes-dashboard
       app: kubernetes-dashboard
       chart: kubernetes-dashboard/kubernetes-dashboard
       version: 6.0.7
@@ -27,8 +27,9 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password")
-            kubectl get sa dashboard-admin -n "${NAMESPACE}" || kubectl create sa dashboard-admin -n "${NAMESPACE}"
+            kubectl get serviceaccount dashboard-admin -n "${NAMESPACE}" || kubectl create serviceaccount dashboard-admin -n "${NAMESPACE}"
             kubectl get clusterrolebinding dashboard-admin || kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
-            ADMIN_SECRET=$(kubectl get secrets -n kube-system | grep dashboard-admin | awk '{print $1}')
+            kubectl get serviceaccounttoken dashboard-admin -n "${NAMESPACE}" || kubectl create serviceaccounttoken dashboard-admin -n "${NAMESPACE}"
+            ADMIN_SECRET=$(kubectl get secrets -n "${NAMESPACE}" | grep dashboard-admin | awk '{print $1}')
             kubectl get secret -n "${NAMESPACE}" ${ADMIN_SECRET} -o jsonpath="{.data.token}" | base64 --decode; echo
         esac

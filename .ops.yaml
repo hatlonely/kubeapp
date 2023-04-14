@@ -69,6 +69,7 @@ task:
       - kubectl get namespaces "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create namespace "${NAMESPACE}"
       - kubectl get namespaces "monitoring" 2>/dev/null 1>&2 || kubectl create namespace "monitoring"
       - kubectl get namespaces "kubeapps" 2>/dev/null 1>&2 || kubectl create namespace "kubeapps"
+      - kubectl get namespaces "kubernetes-dashboard" 2>/dev/null 1>&2 || kubectl create namespace "kubernetes-dashboard"
   pull-secret:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
