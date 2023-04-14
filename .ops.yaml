@@ -2,6 +2,7 @@ name: kubeapp
 
 include:
   - ops/nginx-ingress-controller/.ops.yaml
+  - ops/kubernetes-dashboard/.ops.yaml
 
 dep:
   ops:
