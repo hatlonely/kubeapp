@@ -9,7 +9,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task pull-secret
 ops --variable .cfg/dev.yaml -a run --env dev --task helm-add-repo
 
 ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --cmd=image
-ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=image
+ops --variable .cfg/dev.yaml -a run --env dev --task kubernetes-dashboard --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task nfs-subdir-external-provisioner --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task jaeger --cmd=image
@@ -27,7 +27,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task etcd-operator --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task cert-manager --cmd=image
 
 ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --cmd=install
-ops --variable .cfg/dev.yaml -a run --env dev --task k8s-dashboard --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task kubernetes-dashboard --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task nfs-subdir-external-provisioner --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task jaeger --cmd=install
