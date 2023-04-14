@@ -23,7 +23,11 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
-          "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+          "pull")
+            helm pull ${chart} --version=${version} && tar -xzvf ${app}-${version}.tgz && tar -xzvf ${app}-${version}.tgz
+            helm package --dependency-update ${app}
+            mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/
+            ;;
         esac
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
@@ -51,14 +55,6 @@ task:
             curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.49.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml -o ops/${app}/crds/monitoring.coreos.com_thanosrulers.yaml
             ;;
           "install")
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_alertmanagerconfigs.yaml
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_alertmanagers.yaml
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_podmonitors.yaml
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_probes.yaml
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_prometheuses.yaml
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_prometheusrules.yaml
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_servicemonitors.yaml
-            kubectl apply -f ops/${app}/crds/monitoring.coreos.com_thanosrulers.yaml
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
