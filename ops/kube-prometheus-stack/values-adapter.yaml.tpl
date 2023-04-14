@@ -22,7 +22,7 @@ prometheus:
 #      repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/alertmanager"
 #      tag: v0.22.2
 #
-#prometheusOperator:
+prometheusOperator:
 #  image:
 #    repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/prometheus-operator"
 #    tag: v0.50.0
@@ -32,13 +32,13 @@ prometheus:
 #  thanosImage:
 #    repository: quay.io/thanos/thanos
 #    tag: v0.17.2
-#  admissionWebhooks:
-#    patch:
-#      enabled: true
-#      image:
-#        repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kube-webhook-certgen"
-#        tag: v1.0
-#        sha: ""
+  admissionWebhooks:
+    patch:
+      enabled: true
+      image:
+        registry: "${REGISTRY_ENDPOINT}"
+        repository: "${REGISTRY_NAMESPACE}/kube-webhook-certgen"
+        tag: v20221220-controller-v1.5.1-58-g787ea74b6
 #  tolerations:
 #    - key: "node-role.kubernetes.io/master"
 #      operator: "Exists"
