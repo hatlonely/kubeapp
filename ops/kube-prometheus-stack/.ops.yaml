@@ -11,7 +11,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "crds", "diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["pull", "image", "crds", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: monitoring
       SECRET_NAME: grafana-tls
