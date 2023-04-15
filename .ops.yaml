@@ -5,6 +5,7 @@ include:
   - ops/kubernetes-dashboard/.ops.yaml
   - ops/kube-prometheus-stack/.ops.yaml
   - ops/nfs-subdir-external-provisioner/.ops.yaml
+  - ops/kubeapps/.ops.yaml
 
 dep:
   ops:
@@ -449,40 +450,6 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
-        esac
-  kubeapps:
-    description: https://github.com/bitnami/charts/tree/master/bitnami/kubeapps
-    args:
-      cmd:
-        type: string
-        default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "status"]
-    const:
-      NAMESPACE: kubeapps
-      app: kubeapps
-      chart: bitnami/kubeapps
-      version: 7.5.10
-    step:
-      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
-      - |
-        case "${cmd}" in
-          "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nginx" 1.21.3-debian-10-r50
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-dashboard" 2.4.1-debian-10-r18
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-apprepository-controller" 2.4.1-scratch-r1
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-asset-syncer" 2.4.1-scratch-r1
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-kubeops" 2.4.1-scratch-r1
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-assetsvc" 2.4.1-scratch-r1
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "oauth2-proxy" 7.2.0-debian-10-r5
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-pinniped-proxy" 2.4.1-debian-10-r21
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kubeapps-apis" 2.4.1-debian-10-r21
-            ;;
-          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
         esac
   minio:
     description: |
