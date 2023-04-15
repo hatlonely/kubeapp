@@ -45,6 +45,7 @@ task:
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete secret -n "${NAMESPACE}" kibana
+            kubectl delete secret -n "${NAMESPACE}" kibana-kibana-es-token
             kubectl delete configmap -n "${NAMESPACE}" kibana-kibana-helm-scripts
             kubectl delete sa -n "${NAMESPACE}" pre-install-kibana-kibana
             kubectl delete job -n "${NAMESPACE}" pre-install-kibana-kibana
