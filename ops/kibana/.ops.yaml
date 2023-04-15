@@ -44,13 +44,13 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete secret -n "${NAMESPACE}" kibana
-            kubectl delete secret -n "${NAMESPACE}" kibana-kibana-es-token
-            kubectl delete configmap -n "${NAMESPACE}" kibana-kibana-helm-scripts
-            kubectl delete sa -n "${NAMESPACE}" pre-install-kibana-kibana
-            kubectl delete job -n "${NAMESPACE}" pre-install-kibana-kibana
-            kubectl delete roles -n "${NAMESPACE}" pre-install-kibana-kibana
-            kubectl delete rolebinding -n "${NAMESPACE}" pre-install-kibana-kibana
-            kubectl delete deployments -n "${NAMESPACE}" kibana-kibana
+            kubectl delete secret -n "${NAMESPACE}" kibana || true
+            kubectl delete secret -n "${NAMESPACE}" kibana-kibana-es-token || true
+            kubectl delete configmap -n "${NAMESPACE}" kibana-kibana-helm-scripts || true
+            kubectl delete sa -n "${NAMESPACE}" pre-install-kibana-kibana || true
+            kubectl delete job -n "${NAMESPACE}" pre-install-kibana-kibana || true
+            kubectl delete roles -n "${NAMESPACE}" pre-install-kibana-kibana || true
+            kubectl delete rolebinding -n "${NAMESPACE}" pre-install-kibana-kibana || true
+            kubectl delete deployments -n "${NAMESPACE}" kibana-kibana || true
             ;;
         esac
