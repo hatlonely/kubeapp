@@ -19,6 +19,10 @@ ingress:
     - host: "${KIBANA_HOST}"
       paths:
         - path: /
+  tls:
+    - secretName: "${SECRET_NAME}"
+      hosts:
+        - "${KIBANA_HOST}"
 
 extraEnvs:
   - name: 'KIBANA_ENCRYPTION_KEY'
@@ -27,7 +31,7 @@ extraEnvs:
         name: kibana
         key: encryptionkey
 
-protocol: http
+protocol: https
 
 kibanaConfig:
   kibana.yml: |
