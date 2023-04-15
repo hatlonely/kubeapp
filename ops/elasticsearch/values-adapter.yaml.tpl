@@ -7,12 +7,11 @@ imagePullPolicy: "Always"
 imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
 
-nodeGroup: "master"
 
-roles:
-  master: "true"
-  ingest: "true"
-  data: "true"
+#roles:
+#  master: "true"
+#  ingest: "true"
+#  data: "true"
 
 esConfig:
   elasticsearch.yml: |

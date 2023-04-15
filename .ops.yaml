@@ -264,39 +264,6 @@ task:
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
         esac
-  kibana:
-    description: https://github.com/elastic/helm-charts/tree/master/kibana
-    args:
-      cmd:
-        type: string
-        default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
-    const:
-      SECRET_NAME: kibana-tls
-      app: kibana
-      chart: elastic/kibana
-      version: 7.15.0
-    step:
-      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
-      - |
-        case "${cmd}" in
-          "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
-          "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.elastic.co" "kibana" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "kibana" "${version}"
-            ;;
-          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install")
-            kubectl get secret kibana -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic kibana -n "${NAMESPACE}" --from-literal=encryptionkey="${KIBANA_PASSWORD}"
-            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
-            ;;
-          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete")
-            helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete secret -n "${NAMESPACE}" kibana
-            ;;
-        esac
   etcd-operator:
     description: |
       https://github.com/helm/charts/tree/master/stable/etcd-operator
