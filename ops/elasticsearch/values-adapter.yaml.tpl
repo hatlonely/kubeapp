@@ -2,23 +2,17 @@ persistence:
   enable: true
 
 image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch"
-imageTag: "7.15.0-hl"
+imageTag: "8.5.1-hl"
 imagePullPolicy: "Always"
 imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
 
-volumeClaimTemplate:
-  storageClassName: "${STORAGE_CLASS}"
-
-clusterName: "security"
 nodeGroup: "master"
 
 roles:
   master: "true"
   ingest: "true"
   data: "true"
-
-protocol: https
 
 esConfig:
   elasticsearch.yml: |
