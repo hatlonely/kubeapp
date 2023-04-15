@@ -10,7 +10,6 @@ ingress:
   hostname: "${KUBEAPP_HOST}"
   ingressClassName: nginx
   annotations:
-    kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-http01
     kubernetes.io/tls-acme: "true"
   extraTls:
