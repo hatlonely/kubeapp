@@ -5,8 +5,8 @@ elasticsearchCredentialSecret: elasticsearch-master-credentials
 
 replicas: 2
 
-#image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kibana"
-#imageTag: "8.5.1"
+image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kibana"
+imageTag: "8.5.1"
 imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
 
