@@ -33,7 +33,6 @@ task:
             kubectl get secret elastic-certificates -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic elastic-certificates -n "${NAMESPACE}" --from-file=${TMP}/elasticsearch/elastic-certificates.p12
             kubectl get secret elastic-certificate-pem -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic elastic-certificate-pem -n "${NAMESPACE}" --from-file=${TMP}/elasticsearch/elastic-certificate.pem
             kubectl get secret elastic-certificate-crt -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic elastic-certificate-crt -n "${NAMESPACE}" --from-file=${TMP}/elasticsearch/elastic-certificate.crt
-            kubectl get secret elastic-credentials -n "${NAMESPACE}" 2>/dev/null 1>&2 || kubectl create secret generic elastic-credentials -n "${NAMESPACE}" --from-literal=password="${ELASTICSEARCH_PASSWORD}" --from-literal=username=elastic
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
@@ -45,7 +44,6 @@ task:
             kubectl delete secret -n "${NAMESPACE}" elastic-certificate-crt
             kubectl delete secret -n "${NAMESPACE}" elastic-certificate-pem
             kubectl delete secret -n "${NAMESPACE}" elastic-certificates
-            kubectl delete secret -n "${NAMESPACE}" elastic-credentials
             ;;
           "ssl")
             docker rm -f elastic-helm-charts-certs || true
@@ -59,7 +57,7 @@ task:
             openssl x509 -outform der -in elastic-certificate.pem -out elastic-certificate.crt
             ;;
           "password")
-            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.username}" | base64 --decode; echo
-            kubectl get secret -n "dev" elastic-credentials -o jsonpath="{.data.password}" | base64 --decode; echo
+            kubectl get secrets -n "${NAMESPACE}" elasticsearch-master-credentials -o jsonpath="{.data.username}" | base64 --decode; echo
+            kubectl get secrets -n "${NAMESPACE}" elasticsearch-master-credentials -o jsonpath="{.data.password}" | base64 --decode; echo
             ;;
         esac

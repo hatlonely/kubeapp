@@ -7,12 +7,19 @@ imagePullPolicy: "Always"
 imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
 
+clusterName: "elasticsearch"
+nodeGroup: "master"
+
+createCert: false
+secret:
+  password: "${ELASTICSEARCH_PASSWORD}"
+
 roles:
   - master
   - ingest
   - data
 
-createCert: false
+protocol: https
 
 esConfig:
   elasticsearch.yml: |
@@ -24,18 +31,6 @@ esConfig:
     xpack.security.http.ssl.enabled: true
     xpack.security.http.ssl.truststore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
     xpack.security.http.ssl.keystore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
-
-extraEnvs:
-  - name: ELASTIC_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: elastic-credentials
-        key: password
-  - name: ELASTIC_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: elastic-credentials
-        key: username
 
 secretMounts:
   - name: elastic-certificates
