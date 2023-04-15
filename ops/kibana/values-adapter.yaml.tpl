@@ -36,4 +36,4 @@ kibanaConfig:
     server.ssl.enabled: true
     server.ssl.certificate: /usr/share/kibana/config/certs/elastic-certificate.pem
     server.ssl.key: /usr/share/kibana/config/certs/elastic-certificate.pem
-
+    monitoring.ui.ccs.enabled: false
