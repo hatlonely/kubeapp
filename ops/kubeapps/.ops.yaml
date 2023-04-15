@@ -8,6 +8,7 @@ task:
         validation: x in ["pull", "image", "diff", "install", "delete", "upgrade", "status"]
     const:
       NAMESPACE: kubeapps
+      SECRET_NAME: kubeapps-tls
       app: kubeapps
       chart: bitnami/kubeapps
       version: 12.2.9

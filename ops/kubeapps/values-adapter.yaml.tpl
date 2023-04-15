@@ -7,10 +7,16 @@ global:
 
 ingress:
   enabled: true
-  hostname: ${KUBEAPP_HOST}
+  hostname: "${KUBEAPP_HOST}"
   ingressClassName: nginx
   annotations:
     kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-http01
+    kubernetes.io/tls-acme: "true"
+  extraTls:
+    - secretName: "${SECRET_NAME}"
+      hosts:
+        - "${KUBEAPP_HOST}"
 
 postgresql:
   enabled: true
