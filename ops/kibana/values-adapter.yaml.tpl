@@ -3,7 +3,7 @@ elasticsearchHosts: "https://security-master:9200"
 replicas: 2
 
 image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/kibana"
-imageTag: "7.15.0"
+imageTag: "8.5.1"
 imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
 
