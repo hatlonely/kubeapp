@@ -31,7 +31,7 @@ extraEnvs:
         name: kibana
         key: encryptionkey
 
-protocol: https
+protocol: http
 
 kibanaConfig:
   kibana.yml: |
