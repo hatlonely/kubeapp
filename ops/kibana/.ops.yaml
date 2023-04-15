@@ -54,6 +54,7 @@ task:
             kubectl delete deployments -n "${NAMESPACE}" kibana-kibana || true
             ;;
           "password")
+            echo elastic
             kubectl get secret -n "${NAMESPACE}" elasticsearch-master-credentials -ojsonpath='{.data.password}' | base64 -d; echo
             ;;
         esac
