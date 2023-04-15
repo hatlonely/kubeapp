@@ -2,6 +2,17 @@ global:
   imagePullSecrets:
     - "${PULL_SECRET_NAME}"
 
+ingress:
+  enabled: true
+  hostname: ${KUBEAPP_HOST}
+
+postgresql:
+  enabled: true
+  auth:
+    username: "postgres"
+    postgresPassword: "${KUBEAPP_PASSWORD}"
+    database: assets
+
 frontend:
   image:
     registry: ${REGISTRY_ENDPOINT}

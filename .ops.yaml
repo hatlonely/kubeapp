@@ -17,6 +17,7 @@ env:
   default:
     MONGO_PASSWORD: "{{.mongo.rootPassword}}"
     MYSQL_PASSWORD: "{{.mysql.rootPassword}}"
+    KUBEAPP_PASSWORD: "{{.kubeapp.password}}"
     REDIS_PASSWORD: "{{.redis.password}}"
     ELASTICSEARCH_PASSWORD: "{{.elasticsearch.password}}"
     KIBANA_PASSWORD: "{{.kibana.password}}"
@@ -26,6 +27,7 @@ env:
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     DOMAIN: hatlonely.com
     DASHBOARD_HOST: k8s.dashboard.${DOMAIN}
+    KUBEAPP_HOST: k8s.kubeapp.${DOMAIN}
     KIBANA_HOST: k8s.kibana.${DOMAIN}
     PHPMYADMIN_HOST: k8s.phpmyadmin.${DOMAIN}
     GRAFANA_HOST: k8s.grafana.${DOMAIN}
