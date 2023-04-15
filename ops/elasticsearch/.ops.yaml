@@ -5,7 +5,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "password", "status", "ssl", "image", "docker", "values"]
+        validation: x in ["pull", "diff", "install", "delete", "upgrade", "password", "status", "ssl", "image", "docker", "values"]
     const:
       app: elasticsearch
       chart: elastic/elasticsearch

@@ -6,6 +6,7 @@ include:
   - ops/kube-prometheus-stack/.ops.yaml
   - ops/nfs-subdir-external-provisioner/.ops.yaml
   - ops/kubeapps/.ops.yaml
+  - ops/elasticsearch/.ops.yaml
 
 dep:
   ops:
