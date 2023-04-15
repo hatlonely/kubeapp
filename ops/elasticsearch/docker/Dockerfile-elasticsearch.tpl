@@ -1,4 +1,4 @@
-FROM ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:7.15.0
+FROM ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/elasticsearch:8.5.1
 
-RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install -b https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.15.0/elasticsearch-analysis-ik-7.15.0.zip
+RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install -b https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v8.5.1/elasticsearch-analysis-ik-8.5.1.zip
 
