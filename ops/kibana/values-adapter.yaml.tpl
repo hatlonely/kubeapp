@@ -1,7 +1,7 @@
 elasticsearchHosts: "https://elasticsearch-master:9200"
 elasticsearchCertificateSecret: elastic-certificate-pem
 elasticsearchCertificateAuthoritiesFile: elastic-certificate.pem
-elasticsearchCredentialSecret: security-master-credentials
+elasticsearchCredentialSecret: elasticsearch-master-credentials
 
 replicas: 2
 
