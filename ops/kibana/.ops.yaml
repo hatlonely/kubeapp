@@ -53,4 +53,7 @@ task:
             kubectl delete rolebinding -n "${NAMESPACE}" pre-install-kibana-kibana || true
             kubectl delete deployments -n "${NAMESPACE}" kibana-kibana || true
             ;;
+          "password")
+            kubectl get secret -n "${NAMESPACE}" elasticsearch-master-credentials -ojsonpath='{.data.password}' | base64 -d; echo
+            ;;
         esac
