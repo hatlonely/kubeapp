@@ -26,23 +26,24 @@ ingress:
         - "${KIBANA_HOST}"
 
 extraEnvs:
-  - name: 'ELASTICSEARCH_USERNAME'
-    valueFrom:
-      secretKeyRef:
-        name: elastic-credentials
-        key: username
-  - name: 'ELASTICSEARCH_PASSWORD'
-    valueFrom:
-      secretKeyRef:
-        name: elastic-credentials
-        key: password
+#  - name: 'ELASTICSEARCH_USERNAME'
+#    valueFrom:
+#      secretKeyRef:
+#        name: elastic-credentials
+#        key: username
+#  - name: 'ELASTICSEARCH_PASSWORD'
+#    valueFrom:
+#      secretKeyRef:
+#        name: elastic-credentials
+#        key: password
   - name: 'KIBANA_ENCRYPTION_KEY'
     valueFrom:
       secretKeyRef:
         name: kibana
         key: encryptionkey
 
-protocol: http
+
+protocol: https
 
 kibanaConfig:
   kibana.yml: |
