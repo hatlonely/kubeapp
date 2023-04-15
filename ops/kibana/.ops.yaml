@@ -48,5 +48,7 @@ task:
             kubectl delete configmap -n "${NAMESPACE}" kibana-kibana-helm-scripts
             kubectl delete sa -n "${NAMESPACE}" pre-install-kibana-kibana
             kubectl delete job -n "${NAMESPACE}" pre-install-kibana-kibana
+            kubectl delete roles -n "${NAMESPACE}" pre-install-kibana-kibana
+            kubectl delete rolebinding -n "${NAMESPACE}" pre-install-kibana-kibana
             ;;
         esac
