@@ -1,4 +1,7 @@
-elasticsearchHosts: "https://security-master:9200"
+elasticsearchHosts: "https://elasticsearch-master:9200"
+elasticsearchCertificateSecret: elastic-certificate-pem
+elasticsearchCertificateAuthoritiesFile: elastic-certificate.pem
+elasticsearchCredentialSecret: security-master-credentials
 
 replicas: 2
 
@@ -44,9 +47,9 @@ protocol: http
 kibanaConfig:
   kibana.yml: |
     xpack.security.encryptionKey: \${KIBANA_ENCRYPTION_KEY}
-    elasticsearch.ssl:
-      certificateAuthorities: /usr/share/kibana/config/certs/elastic-certificate.pem
-      verificationMode: certificate
+    server.ssl.enabled: true
+    server.ssl.certificate: /usr/share/kibana/config/certs/elastic-certificate.pem
+    server.ssl.key: /usr/share/kibana/config/certs/elastic-certificate.pem
 
 secretMounts:
   - name: elastic-certificate-pem
