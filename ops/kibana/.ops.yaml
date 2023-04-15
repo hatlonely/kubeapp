@@ -16,7 +16,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
+        validation: x in ["pull", "diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
     const:
       SECRET_NAME: kibana-tls
       app: kibana
