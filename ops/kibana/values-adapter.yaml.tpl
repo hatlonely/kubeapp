@@ -36,7 +36,7 @@ protocol: http
 kibanaConfig:
   kibana.yml: |
     xpack.security.encryptionKey: \${KIBANA_ENCRYPTION_KEY}
-    server.ssl.enabled: true
+    server.ssl.enabled: false
     server.ssl.certificate: /usr/share/kibana/config/certs/elastic-certificate.pem
     server.ssl.key: /usr/share/kibana/config/certs/elastic-certificate.pem
     monitoring.ui.ccs.enabled: false
