@@ -1,10 +1,16 @@
 global:
   imagePullSecrets:
     - "${PULL_SECRET_NAME}"
+  postgresql:
+    auth:
+      password: "${KUBEAPP_PASSWORD}"
 
 ingress:
   enabled: true
   hostname: ${KUBEAPP_HOST}
+  ingressClassName: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
 
 postgresql:
   enabled: true
