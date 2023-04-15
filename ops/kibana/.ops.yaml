@@ -51,5 +51,6 @@ task:
             kubectl delete job -n "${NAMESPACE}" pre-install-kibana-kibana
             kubectl delete roles -n "${NAMESPACE}" pre-install-kibana-kibana
             kubectl delete rolebinding -n "${NAMESPACE}" pre-install-kibana-kibana
+            kubectl delete deployments -n "${NAMESPACE}" kibana-kibana
             ;;
         esac
