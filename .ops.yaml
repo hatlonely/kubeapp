@@ -7,6 +7,7 @@ include:
   - ops/nfs-subdir-external-provisioner/.ops.yaml
   - ops/kubeapps/.ops.yaml
   - ops/elasticsearch/.ops.yaml
+  - ops/kibana/.ops.yaml
 
 dep:
   ops:
