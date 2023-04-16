@@ -41,6 +41,8 @@ env:
     MINIO_CONSOLE_TLS: minio-console-tls
     PHPMYADMIN_TLS: phpmyadmin-tls
     HELM_HOME: "${TMP}"
+    DNS_AK: "{{.dns.ak}}"
+    DNS_SK: "{{.dns.sk}}"
   dev:
     K8S_CONTEXT: kubernetes-admin@kubernetes
     NAMESPACE: dev

@@ -13,7 +13,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["pull", "diff", "install", "delete", "upgrade", "status", "image", "values", "static"]
+        validation: x in ["pull", "http01", "dns01", "diff", "install", "delete", "upgrade", "status", "image", "values", "static"]
     const:
       NAMESPACE: kube-system
       app: cert-manager
@@ -48,6 +48,9 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
             kubectl delete -f ${TMP}/${app}/acme/http01/cluster-issuer.yaml || true
+            kubectl delete -f ops/${app}/static/bundle.yaml || true
+            kubectl delete -f ${TMP}/${app}/acme/dns01/secret.yaml || true
+            kubectl delete -f ${TMP}/${app}/acme/dns01/cluster-issuer.yaml || true
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete -f ops/${app}/static/cert-manager.crds.yaml
             ;;
@@ -55,5 +58,8 @@ task:
             kubectl apply -f ${TMP}/${app}/acme/http01/cluster-issuer.yaml
             ;;
           "dns01")
+            kubectl apply -f ops/${app}/static/bundle.yaml
+            kubectl apply -f ${TMP}/${app}/acme/dns01/secret.yaml
+            kubectl apply -f ${TMP}/${app}/acme/dns01/cluster-issuer.yaml
             ;;
         esac
