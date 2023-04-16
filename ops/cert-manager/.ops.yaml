@@ -44,12 +44,12 @@ task:
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
-            kubectl delete -f ${TMP}/${app}/cluster-issuer-acme-http01.yaml || true
+            kubectl delete -f ${TMP}/${app}/acme/http01/cluster-issuer.yaml || true
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete -f ops/${app}/crds/cert-manager.crds.yaml
             ;;
           "http01")
-            kubectl apply -f ${TMP}/${app}/cluster-issuer-acme-http01.yaml
+            kubectl apply -f ${TMP}/${app}/acme/http01/cluster-issuer.yaml
             ;;
           "dns01")
             ;;
