@@ -141,6 +141,7 @@ task:
       - helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
       - helm repo add minio https://charts.min.io/
       - helm repo add jetstack https://charts.jetstack.io
+      - helm repo add utkuozdemir https://utkuozdemir.org/helm-charts
       - helm repo update
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
