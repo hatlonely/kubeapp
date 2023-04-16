@@ -1,0 +1,29 @@
+  mysql:
+    description: https://github.com/bitnami/charts/tree/master/bitnami/mysql
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
+    const:
+      app: mysql
+      chart: bitnami/mysql
+      version: 8.7.2
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "mysql" 8.0.25-debian-10-r37
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete pvc -n "${NAMESPACE}" data-mysql-0
+            ;;
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
+        esac
