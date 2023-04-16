@@ -13,6 +13,7 @@ include:
   - ops/redis/.ops.yaml
   - ops/phpmyadmin/.ops.yaml
   - ops/jellyfin/.ops.yaml
+  - ops/qbittorrent/.ops.yaml
 
 dep:
   ops:
@@ -143,6 +144,7 @@ task:
       - helm repo add minio https://charts.min.io/
       - helm repo add jetstack https://charts.jetstack.io
       - helm repo add utkuozdemir https://utkuozdemir.org/helm-charts
+      - helm repo add truecharts https://charts.truecharts.org/
       - helm repo update
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
