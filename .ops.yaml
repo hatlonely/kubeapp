@@ -9,6 +9,7 @@ include:
   - ops/elasticsearch/.ops.yaml
   - ops/kibana/.ops.yaml
   - ops/cert-manager/.ops.yaml
+  - ops/mysql/.ops.yaml
 
 dep:
   ops:
