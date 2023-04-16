@@ -13,7 +13,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["pull", "diff", "install", "delete", "upgrade", "status", "image", "values", "crds"]
+        validation: x in ["pull", "diff", "install", "delete", "upgrade", "status", "image", "values", "static"]
     const:
       NAMESPACE: kube-system
       app: cert-manager
@@ -35,10 +35,13 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-ctl" "${version}"
             sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-webhook" "${version}"
             ;;
-          "crds") wget https://github.com/cert-manager/cert-manager/releases/download/${version}/cert-manager.crds.yaml -O ops/${app}/crds/cert-manager.crds.yaml;;
+          "static")
+            wget https://github.com/cert-manager/cert-manager/releases/download/${version}/cert-manager.crds.yaml -O ops/${app}/static/cert-manager.crds.yaml
+            wget https://raw.githubusercontent.com/pragkent/alidns-webhook/master/deploy/bundle.yaml -O ops/${app}/static/bundle.yaml
+            ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
-            kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
+            kubectl apply -f ops/${app}/static/cert-manager.crds.yaml
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
@@ -46,7 +49,7 @@ task:
           "delete")
             kubectl delete -f ${TMP}/${app}/acme/http01/cluster-issuer.yaml || true
             helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete -f ops/${app}/crds/cert-manager.crds.yaml
+            kubectl delete -f ops/${app}/static/cert-manager.crds.yaml
             ;;
           "http01")
             kubectl apply -f ${TMP}/${app}/acme/http01/cluster-issuer.yaml
