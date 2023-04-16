@@ -13,7 +13,7 @@ imagePullSecrets:
 ingress:
   enabled: true
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-http01
+    cert-manager.io/cluster-issuer: letsencrypt-dns01
     kubernetes.io/tls-acme: "true"
   hosts:
     - host: "${KIBANA_HOST}"

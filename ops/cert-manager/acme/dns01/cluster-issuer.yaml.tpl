@@ -12,7 +12,7 @@ spec:
     solvers:
     - dns01:
         webhook:
-          groupName: hatlonely.com
+          groupName: acme.yourcompany.com
           solverName: alidns
           config:
             region: ""
