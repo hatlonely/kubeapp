@@ -17,6 +17,7 @@ task:
         default: diff
         validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
     const:
+      SECRET_NAME: jellyfin-tls
       app: jellyfin
       chart: utkuozdemir/jellyfin
       version: 2.0.0
