@@ -17,3 +17,13 @@ ingress:
     - secretName: "${SECRET_NAME}"
       hosts:
         - "${JELLYFIN_HOST}"
+
+persistence:
+  data:
+    enabled: true
+    isPvc: false
+    customVolume:
+      nfs:
+        server: 192.168.0.101
+        path: /nfs/Transmission
+        readOnly: false
