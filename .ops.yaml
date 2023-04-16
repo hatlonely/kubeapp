@@ -12,6 +12,7 @@ include:
   - ops/mysql/.ops.yaml
   - ops/redis/.ops.yaml
   - ops/phpmyadmin/.ops.yaml
+  - ops/jellyfin/.ops.yaml
 
 dep:
   ops:
