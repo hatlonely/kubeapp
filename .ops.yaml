@@ -10,6 +10,7 @@ include:
   - ops/kibana/.ops.yaml
   - ops/cert-manager/.ops.yaml
   - ops/mysql/.ops.yaml
+  - ops/redis/.ops.yaml
 
 dep:
   ops:
@@ -166,39 +167,6 @@ task:
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete pvc -n "${NAMESPACE}" mongo-mongodb;;
           "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
-        esac
-  redis:
-    description: https://github.com/bitnami/charts/tree/master/bitnami/redis
-    args:
-      cmd:
-        type: string
-        default: diff
-        validation: x in ["diff", "image", "install", "delete", "upgrade", "status", "password"]
-    const:
-      app: redis
-      chart: bitnami/redis
-      version: 17.1.2
-    step:
-      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
-      - |
-        case "${cmd}" in
-          "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis" 7.0.4-debian-11-r11
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis-exporter" 1.43.0-debian-11-r18
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "redis-sentinel" 7.0.4-debian-11-r8
-            ;;
-          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete")
-            helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete pvc -n "${NAMESPACE}" redis-data-redis-master-0
-            kubectl delete pvc -n "${NAMESPACE}" redis-data-redis-slave-0
-            kubectl delete pvc -n "${NAMESPACE}" redis-data-redis-slave-1
-            ;;
-          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.redis-password}" | base64 --decode; echo
         esac
   redis-cluster:
     description: https://github.com/bitnami/charts/tree/master/bitnami/redis-cluster
