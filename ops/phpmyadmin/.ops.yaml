@@ -1,1 +1,42 @@
 task:
+  phpmyadmin:
+    description: |
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task phpmyadmin --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task phpmyadmin --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task phpmyadmin --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task phpmyadmin --cmd=password
+
+      ## 参考链接
+
+      - 项目地址: <https://github.com/bitnami/charts/tree/master/bitnami/phpmyadmin>
+      - 仓库地址: <https://artifacthub.io/packages/helm/bitnami/phpmyadmin>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+      app: phpmyadmin
+      chart: bitnami/phpmyadmin
+      version: 8.2.10
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "phpmyadmin" 5.1.1-debian-10-r20
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
+        esac

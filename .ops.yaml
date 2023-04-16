@@ -11,6 +11,7 @@ include:
   - ops/cert-manager/.ops.yaml
   - ops/mysql/.ops.yaml
   - ops/redis/.ops.yaml
+  - ops/phpmyadmin/.ops.yaml
 
 dep:
   ops:
@@ -190,32 +191,6 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.redis-password}" | base64 --decode; echo
-        esac
-  phpmyadmin:
-    description: https://github.com/bitnami/charts/tree/master/bitnami/phpmyadmin
-    args:
-      cmd:
-        type: string
-        default: diff
-        validation: x in ["diff", "image", "install", "delete", "upgrade", "status", "password"]
-    const:
-      app: phpmyadmin
-      chart: bitnami/phpmyadmin
-      version: 8.2.10
-    step:
-      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
-      - |
-        case "${cmd}" in
-          "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "phpmyadmin" 5.1.1-debian-10-r20
-            ;;
-          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
-          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
         esac
   etcd-operator:
     description: |
