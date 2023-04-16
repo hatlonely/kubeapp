@@ -1,6 +1,9 @@
 image:
   repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jellyfin
 
+imagePullSecrets:
+  - name: "${PULL_SECRET_NAME}"
+
 ingress:
   enabled: true
   className: "nginx"
