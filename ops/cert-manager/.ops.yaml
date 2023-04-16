@@ -15,7 +15,7 @@ task:
         default: diff
         validation: x in ["pull", "http01", "dns01", "diff", "install", "delete", "upgrade", "status", "image", "values", "static"]
     const:
-      NAMESPACE: kube-system
+      NAMESPACE: cert-manager
       app: cert-manager
       chart: jetstack/cert-manager
       version: v1.11.1
@@ -51,8 +51,8 @@ task:
             kubectl delete -f ops/${app}/static/bundle.yaml || true
             kubectl delete -f ${TMP}/${app}/acme/dns01/secret.yaml || true
             kubectl delete -f ${TMP}/${app}/acme/dns01/cluster-issuer.yaml || true
-            helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete -f ops/${app}/static/cert-manager.crds.yaml
+            helm delete -n "${NAMESPACE}" "${app}" || exit 1
+            kubectl delete -f ops/${app}/static/cert-manager.crds.yaml || true
             ;;
           "http01")
             kubectl apply -f ${TMP}/${app}/acme/http01/cluster-issuer.yaml
