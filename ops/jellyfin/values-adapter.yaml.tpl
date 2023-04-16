@@ -1,5 +1,5 @@
 image:
-#  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jellyfin
+  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jellyfin
   tag: "10.8.9"
 
 imagePullSecrets:
