@@ -30,15 +30,15 @@ task:
         case "${cmd}" in
           "values") curl https://raw.githubusercontent.com/jetstack/cert-manager/v1.11.1/deploy/charts/cert-manager/values.yaml -o ops/${app}/values.yaml;;
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-controller" "v1.11.1"
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-cainjector" "v1.11.1"
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-ctl" "v1.11.1"
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-webhook" "v1.11.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-controller" "${version}"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-cainjector" "${version}"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-ctl" "${version}"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-webhook" "${version}"
             ;;
-          "crds") curl https://github.com/cert-manager/cert-manager/releases/download/v1.11.1/cert-manager.crds.yaml -o ops/${app}/crds/cert-manager.crds.yaml;;
+          "crds") wget https://github.com/cert-manager/cert-manager/releases/download/${version}/cert-manager.crds.yaml -O ops/${app}/crds/cert-manager.crds.yaml;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
-            # kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
+            kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
             # kubectl apply -f ${TMP}/${app}/cluster-issuer.yaml
             ;;
