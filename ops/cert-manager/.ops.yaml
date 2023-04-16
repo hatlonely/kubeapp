@@ -7,7 +7,7 @@ task:
 
       ## 参考链接
 
-      项目地址：https://github.com/jetstack/cert-manager/tree/v1.6.1/deploy/charts/cert-manager
+      项目地址：https://github.com/jetstack/cert-manager/tree/v1.11.1/deploy/charts/cert-manager
       仓库地址：https://artifacthub.io/packages/helm/cert-manager/cert-manager
     args:
       cmd:
@@ -18,7 +18,7 @@ task:
       NAMESPACE: kube-system
       app: cert-manager
       chart: jetstack/cert-manager
-      version: v1.6.1
+      version: v1.11.1
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
@@ -28,19 +28,19 @@ task:
         esac
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
-          "values") curl https://raw.githubusercontent.com/jetstack/cert-manager/v1.6.1/deploy/charts/cert-manager/values.yaml -o ops/${app}/values.yaml;;
+          "values") curl https://raw.githubusercontent.com/jetstack/cert-manager/v1.11.1/deploy/charts/cert-manager/values.yaml -o ops/${app}/values.yaml;;
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-controller" "v1.6.1"
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-cainjector" "v1.6.1"
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-ctl" "v1.6.1"
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-webhook" "v1.6.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-controller" "v1.11.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-cainjector" "v1.11.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-ctl" "v1.11.1"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "jetstack" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "cert-manager-webhook" "v1.11.1"
             ;;
-          "crds") curl https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.crds.yaml -o ops/${app}/crds/cert-manager.crds.yaml;;
+          "crds") curl https://github.com/cert-manager/cert-manager/releases/download/v1.11.1/cert-manager.crds.yaml -o ops/${app}/crds/cert-manager.crds.yaml;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
-            kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
+            # kubectl apply -f ops/${app}/crds/cert-manager.crds.yaml
             helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
-            kubectl apply -f ${TMP}/${app}/cluster-issuer.yaml
+            # kubectl apply -f ${TMP}/${app}/cluster-issuer.yaml
             ;;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
