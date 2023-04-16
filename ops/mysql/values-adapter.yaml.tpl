@@ -4,7 +4,7 @@ auth:
 image:
   registry: "${REGISTRY_ENDPOINT}"
   repository: "${REGISTRY_NAMESPACE}/mysql"
-  tag: 8.0.25-debian-10-r37
+  tag: 8.0.32-debian-11-r21
   pullSecrets:
     - "${PULL_SECRET_NAME}"
 

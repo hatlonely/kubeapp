@@ -1,7 +1,16 @@
 task:
   mysql:
     description: |
-      https://github.com/bitnami/charts/tree/master/bitnami/mysql
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task mysql --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task mysql --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task mysql --cmd=install
+
+      ## 参考链接
+
+      - 仓库地址: <https://artifacthub.io/packages/helm/bitnami/mysql>
+      - 项目地址: <https://github.com/bitnami/charts/tree/master/bitnami/mysql>
     args:
       cmd:
         type: string
@@ -21,7 +30,7 @@ task:
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "mysql" 8.0.25-debian-10-r37
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "mysql" 8.0.32-debian-11-r21
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
