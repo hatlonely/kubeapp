@@ -36,11 +36,6 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete")
-            helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete pvc -n "${NAMESPACE}" jellyfin-data-jellyfin-master-0
-            kubectl delete pvc -n "${NAMESPACE}" jellyfin-data-jellyfin-slave-0
-            kubectl delete pvc -n "${NAMESPACE}" jellyfin-data-jellyfin-slave-1
-            ;;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.jellyfin-password}" | base64 --decode; echo
         esac
