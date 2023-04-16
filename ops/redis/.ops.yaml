@@ -3,10 +3,10 @@ task:
     description: |
       ## ops 命令
 
-      ops --variable .cfg/dev.yaml -a run --env dev --task kibana --cmd=pull
-      ops --variable .cfg/dev.yaml -a run --env dev --task kibana --cmd=image
-      ops --variable .cfg/dev.yaml -a run --env dev --task kibana --cmd=install
-      ops --variable .cfg/dev.yaml -a run --env dev --task kibana --cmd=password
+      ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task redis --cmd=password
 
       ## 参考链接
 
