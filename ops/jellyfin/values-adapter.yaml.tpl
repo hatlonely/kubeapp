@@ -30,3 +30,7 @@ persistence:
         server: 192.168.0.101
         path: /nfs/Transmission
         readOnly: false
+
+resources:
+  requests:
+    cpu: "5000m"
