@@ -19,3 +19,25 @@ defaultBackend:
     pullSecrets:
       - "${PULL_SECRET_NAME}"
   replicaCount: 3
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: nginx-ingress-controller
+              app.kubernetes.io/instance: nginx-ingress-controller
+              app.kubernetes.io/component: controller
+          topologyKey: kubernetes.io/hostname
+        weight: 1
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: "kubernetes.io/hostname"
+              operator: In
+              values:
+                - "hatlonely-vc66-0"
+                - "hatlonely-vc66-1"
+                - "hatlonely-vc66-2"
