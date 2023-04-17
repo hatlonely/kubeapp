@@ -39,6 +39,12 @@ persistence:
         path: /nfs/Transmission
         readOnly: false
 
-resources:
-  requests:
-    cpu: "5000m"
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: "kubernetes.io/hostname"
+              operator: In
+              values:
+                - "hatlonely-mac-mini-0"
