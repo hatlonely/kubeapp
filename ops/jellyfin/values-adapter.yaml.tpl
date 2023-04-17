@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jellyfin
@@ -22,6 +22,14 @@ ingress:
 #        - "${JELLYFIN_HOST}"
 
 persistence:
+  config:
+    enabled: true
+    isPvc: false
+    customVolume:
+      nfs:
+        server: 192.168.0.101
+        path: /nfs/Transmission
+        readOnly: false
   data:
     enabled: true
     isPvc: false
