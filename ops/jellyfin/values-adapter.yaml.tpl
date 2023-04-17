@@ -48,4 +48,13 @@ affinity:
               operator: In
               values:
                 - "hatlonely-vc66-2"
-#                - "hatlonely-mac-mini-0"
+
+extraVolumes:
+  - name: dri
+    hostPath:
+      path: /usr/lib/x86_64-linux-gnu/dri
+      type: Directory
+
+extraVolumeMounts:
+  - name: dri
+    mountPath: /dev/dri
