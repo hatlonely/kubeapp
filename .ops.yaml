@@ -32,6 +32,7 @@ env:
     MINIO_USERNAME: "{{.minio.username}}"
     MINIO_PASSWORD: "{{.minio.password}}"
     GRAFANA_PASSWORD: "{{.grafana.password}}"
+    QBITTORRENT_PASSWORD: "{{.qbittorrent.password}}"
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     DOMAIN: hatlonely.com
     DASHBOARD_HOST: dashboard.${DOMAIN}
