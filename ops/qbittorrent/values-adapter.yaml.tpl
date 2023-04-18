@@ -32,3 +32,6 @@ persistence:
   additionalMounts:
     - name: nfs
       mountPath: /nfs
+
+metrics:
+  enabled: true
