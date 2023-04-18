@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 3
 
 image:
   repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jellyfin
@@ -47,6 +47,8 @@ affinity:
             - key: "kubernetes.io/hostname"
               operator: In
               values:
+                - "hatlonely-vc66-0"
+                - "hatlonely-vc66-1"
                 - "hatlonely-vc66-2"
 
 extraVolumes:
