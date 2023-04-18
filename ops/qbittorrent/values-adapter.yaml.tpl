@@ -19,7 +19,7 @@ env:
   TZ: "Asia/Shanghai"
 
 persistence:
-  enabled: false
+  enabled: true
   additionalVolumes:
     - name: nfs
       nfs:
