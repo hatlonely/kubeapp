@@ -42,6 +42,7 @@ env:
     JAEGER_HOST: k8s.jaeger.${DOMAIN}
     MINIO_HOST: k8s.minio.${DOMAIN}
     JELLYFIN_HOST: k8s.jellyfin.${DOMAIN}
+    QBITTORRENT_HOST: qbittorrent.k8s.hatlonely.com
     MINIO_CONSOLE_HOST: k8s.console.minio.${DOMAIN}
     MINIO_TLS: minio-tls
     MINIO_CONSOLE_TLS: minio-console-tls
