@@ -32,7 +32,3 @@ persistence:
   additionalMounts:
     - name: nfs
       mountPath: /nfs
-
-webService:
-  type: ClusterIP
-  port: 8080
