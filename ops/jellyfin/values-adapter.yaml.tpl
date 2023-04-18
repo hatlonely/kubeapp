@@ -39,6 +39,22 @@ persistence:
         path: /nfs/Transmission
         readOnly: false
 
-resources:
-  requests:
-    cpu: "5000m"
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: "kubernetes.io/hostname"
+              operator: In
+              values:
+                - "hatlonely-vc66-2"
+
+extraVolumes:
+  - name: dri
+    hostPath:
+      path: /usr/lib/x86_64-linux-gnu/dri
+      type: Directory
+
+extraVolumeMounts:
+  - name: dri
+    mountPath: /dev/dri
