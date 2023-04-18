@@ -2,7 +2,8 @@ ingress:
   main:
     enabled: true
     className: "nginx"
-    annotations: { }
+    annotations:
+      kubernetes.io/ingress.class: nginx
     hosts:
       - host: "${QBITTORRENT_HOST}"
         paths:
