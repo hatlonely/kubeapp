@@ -36,4 +36,3 @@ persistence:
 webService:
   type: ClusterIP
   port: 8080
-  externalIps: []
