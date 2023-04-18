@@ -34,16 +34,16 @@ env:
     GRAFANA_PASSWORD: "{{.grafana.password}}"
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     DOMAIN: hatlonely.com
-    DASHBOARD_HOST: k8s.dashboard.${DOMAIN}
-    KUBEAPP_HOST: k8s.kubeapp.${DOMAIN}
-    KIBANA_HOST: k8s.kibana.${DOMAIN}
-    PHPMYADMIN_HOST: k8s.phpmyadmin.${DOMAIN}
-    GRAFANA_HOST: k8s.grafana.${DOMAIN}
-    JAEGER_HOST: k8s.jaeger.${DOMAIN}
-    MINIO_HOST: k8s.minio.${DOMAIN}
-    JELLYFIN_HOST: k8s.jellyfin.${DOMAIN}
-    QBITTORRENT_HOST: qbittorrent.k8s.hatlonely.com
-    MINIO_CONSOLE_HOST: k8s.console.minio.${DOMAIN}
+    DASHBOARD_HOST: dashboard.${DOMAIN}
+    KUBEAPP_HOST: kubeapp.${DOMAIN}
+    KIBANA_HOST: kibana.${DOMAIN}
+    PHPMYADMIN_HOST: phpmyadmin.${DOMAIN}
+    GRAFANA_HOST: grafana.${DOMAIN}
+    JAEGER_HOST: jaeger.${DOMAIN}
+    MINIO_HOST: minio.${DOMAIN}
+    JELLYFIN_HOST: jellyfin.${DOMAIN}
+    QBITTORRENT_HOST: qbittorrent..${DOMAIN}
+    MINIO_CONSOLE_HOST: console.minio.${DOMAIN}
     MINIO_TLS: minio-tls
     MINIO_CONSOLE_TLS: minio-console-tls
     PHPMYADMIN_TLS: phpmyadmin-tls
