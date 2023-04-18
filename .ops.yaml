@@ -42,7 +42,7 @@ env:
     JAEGER_HOST: jaeger.${DOMAIN}
     MINIO_HOST: minio.${DOMAIN}
     JELLYFIN_HOST: jellyfin.${DOMAIN}
-    QBITTORRENT_HOST: qbittorrent..${DOMAIN}
+    QBITTORRENT_HOST: qbittorrent.${DOMAIN}
     MINIO_CONSOLE_HOST: console.minio.${DOMAIN}
     MINIO_TLS: minio-tls
     MINIO_CONSOLE_TLS: minio-console-tls
