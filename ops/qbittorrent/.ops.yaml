@@ -19,8 +19,8 @@ task:
     const:
       SECRET_NAME: qbittorrent-tls
       app: qbittorrent
-      chart: truecharts/qbittorrent
-      version: 14.0.6
+      chart: k8s-at-home/qbittorrent
+      version: 13.5.2
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
@@ -31,7 +31,7 @@ task:
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "tccr.io" "truecharts" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "qbittorrent" "4.5.1"
+            sh ${DEP}/ops/tool/image.sh sync "ghcr.io" "k8s-at-home" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "qbittorrent" "13.5.2"
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
