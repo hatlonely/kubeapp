@@ -1,3 +1,6 @@
+image:
+  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/qbittorrent
+
 ingress:
   main:
     enabled: true
