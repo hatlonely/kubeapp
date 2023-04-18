@@ -125,6 +125,14 @@ task:
             --namespace=kubeapps
         }
       - |
+        kubectl get secret "${PULL_SECRET_NAME}" -n "kubernetes-dashboard" 2>/dev/null 1>&2 || { \
+          kubectl create secret docker-registry ${PULL_SECRET_NAME} \
+            --docker-server=${REGISTRY_ENDPOINT} \
+            --docker-username=${REGISTRY_USERNAME} \
+            --docker-password=${REGISTRY_PASSWORD} \
+            --namespace=kubernetes-dashboard
+        }
+      - |
         kubectl get secret "${PULL_SECRET_NAME}" -n "cert-manager" 2>/dev/null 1>&2 || { \
           kubectl create secret docker-registry ${PULL_SECRET_NAME} \
             --docker-server=${REGISTRY_ENDPOINT} \
