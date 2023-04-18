@@ -1,4 +1,4 @@
-replicaCount: 3
+replicaCount: 1
 
 image:
   repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jellyfin
@@ -44,12 +44,10 @@ affinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
         - matchExpressions:
-            - key: "kubernetes.io/hostname"
-              operator: In
-              values:
-                - "hatlonely-vc66-0"
-                - "hatlonely-vc66-1"
-                - "hatlonely-vc66-2"
+          - key: "kubernetes.io/hostname"
+            operator: In
+            values:
+              - "hatlonely-vc66-2"
 
 extraVolumes:
   - name: dri
