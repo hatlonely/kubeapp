@@ -1,6 +1,9 @@
 image:
   repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/qbittorrent
 
+imagePullSecrets:
+  - name: "${PULL_SECRET_NAME}"
+
 ingress:
   enabled: true
   className: "nginx"
@@ -29,3 +32,8 @@ persistence:
   additionalMounts:
     - name: nfs
       mountPath: /nfs
+
+webService:
+  type: ClusterIP
+  port: 8080
+  externalIps: []
