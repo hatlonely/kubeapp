@@ -10,7 +10,7 @@ task:
 
       ## 参考链接
 
-      - 仓库地址: <https://artifacthub.io/packages/helm/truecharts/qbittorrent>
+      - 仓库地址: <https://artifacthub.io/packages/helm/alekc/qbittorrent>
     args:
       cmd:
         type: string

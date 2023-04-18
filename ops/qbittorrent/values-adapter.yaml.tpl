@@ -1,5 +1,5 @@
-#image:
-#  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/qbittorrent
+image:
+  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/qbittorrent
 
 ingress:
   enabled: true
@@ -29,7 +29,3 @@ persistence:
   additionalMounts:
     - name: nfs
       mountPath: /nfs
-
-webService:
-  type: ClusterIP
-  port: 18080
