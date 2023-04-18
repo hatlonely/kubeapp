@@ -58,3 +58,9 @@ extraVolumes:
 extraVolumeMounts:
   - name: dri
     mountPath: /dev/dri
+
+securityContext:
+  privileged: true
+  capabilities:
+    add:
+      - NET_ADMIN
