@@ -1,18 +1,31 @@
-image:
-  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/qbittorrent
+#image:
+#  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/qbittorrent
 
 ingress:
-  main:
-    enabled: true
-    className: "nginx"
-    annotations:
-      kubernetes.io/ingress.class: nginx
-    hosts:
-      - host: "${QBITTORRENT_HOST}"
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-  #  tls:
-  #    - secretName: "${SECRET_NAME}"
-  #      hosts:
-  #        - "${QBITTORRENT_HOST}"
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: "${QBITTORRENT_HOST}"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+#  tls:
+#    - secretName: "${SECRET_NAME}"
+#      hosts:
+#        - "${QBITTORRENT_HOST}"
+
+env:
+  TZ: "Asia/Shanghai"
+
+persistence:
+  enabled: false
+  additionalVolumes:
+    - name: nfs
+      nfs:
+        server: 192.168.0.101
+        path: /nfs/Transmission
+        readOnly: false
+  additionalMounts:
+    - name: nfs
+      mountPath: /nfs

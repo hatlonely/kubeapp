@@ -1,82 +1,123 @@
-#
-# IMPORTANT NOTE
-#
-# This chart inherits from our common library chart. You can check the default values/options here:
-# https://github.com/k8s-at-home/library-charts/tree/main/charts/stable/common/values.yaml
-#
+replicaCount: 1
 
 image:
-  # -- image repository
-  repository: ghcr.io/k8s-at-home/qbittorrent
-  # @default -- chart.appVersion
-  tag:
-  # -- image pull policy
+  repository: linuxserver/qbittorrent
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 
-settings:
-  # -- Enables automatic port configuration at startup
-  # This sets the qbittorrent port to the value of `service.bittorrent.ports.bittorrent.port`.
-  automaticPortSetup: false
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
 
-# -- environment variables. See [image docs](https://docs.k8s-at-home.com/our-container-images/configuration/) for more details.
-# @default -- See below
-env:
-  # -- Set the container timezone
-  TZ: UTC
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
 
-# -- Configures service settings for the chart.
-# @default -- See values.yaml
-service:
-  main:
-    ports:
-      http:
-        port: 8080
-  bittorrent:
-    enabled: false
-    type: ClusterIP
-    ports:
-      bittorrent:
-        enabled: true
-        port: 6881
-        protocol: TCP
-        targetPort: 6881
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# configuration for the web ui service
+webService:
+  type: ClusterIP
+  port: 80
+  externalIps: []
+
+# configuration for the bittorrent service
+btService:
+  type: ClusterIP
+  # on which port qbittorrent should be listening for incoming connections
+  port: 6881
+  externalIps: []
 
 ingress:
-  # -- Enable and configure ingress settings for the chart under this key.
-  # @default -- See values.yaml
-  main:
-    enabled: false
+  enabled: false
+  className: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
-# -- Configure persistence settings for the chart under this key.
-# @default -- See values.yaml
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env:
+  PUID: "1000"
+  PGID: "1000"
+  TZ: "Europe/London"
+
 persistence:
-  config:
-    enabled: false
-
-  media:
-    enabled: false
-    mountPath: /media
-
-  downloads:
-    enabled: false
-    mountPath: /downloads
+  storageClass: ""
+  existingClaim: ""
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 800Mi
+  # if you need any additional volumes, you can define them here
+  additionalVolumes: []
+  # if you need any additional volume mounts, you can define them here
+  additionalMounts: []
 
 metrics:
-  # -- Enable and configure prometheus-qbittorrent-exporter sidecar and Prometheus podMonitor.
-  # @default -- See values.yaml
   enabled: false
   serviceMonitor:
+    enabled: false
     interval: 15s
     scrapeTimeout: 5s
     labels: {}
-  # -- Enable and configure Prometheus Rules for the chart under this key.
-  # @default -- See values.yaml
   prometheusRule:
     enabled: false
     labels: {}
-    # -- Configure additionial rules for the chart under this key.
-    # @default -- See prometheusrules.yaml
-    rules: []
+    rules:
+      []
       # - alert: qBittorrentDown
       #   annotations:
       #     description: qBittorrent service is down.
@@ -85,23 +126,14 @@ metrics:
       #     qbittorrent_up == 0
       #   for: 5m
       #   labels:
-      #     severity: critical
+    #     severity: critical
   exporter:
     image:
-      # -- image repository
       repository: esanchezm/prometheus-qbittorrent-exporter
-      # -- image tag
       tag: v1.2.0
-      # -- image pull policy
       pullPolicy: IfNotPresent
     env:
-      # -- qbittorrent username
-      # update value after configuring qbittorrent
       user: "admin"
-      # -- qbittorrent password
-      # update value after configuring qbittorrent
       password: "adminadmin"
-      # -- metrics port
       port: 9022
-      # -- log level [DEBUG|INFO|WARNING|ERROR|CRITICAL]
       logLevel: INFO
