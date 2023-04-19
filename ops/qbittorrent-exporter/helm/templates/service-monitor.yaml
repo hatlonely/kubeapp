@@ -7,6 +7,9 @@ spec:
     matchLabels:
       app.kubernetes.io/name: qbittorrent-exporter
       app.kubernetes.io/instance: qbittorrent-exporter
+  namespaceSelector:
+    matchNames:
+      - {{.Release.Namespace}}
   endpoints:
     - port: metrics
       interval: 15s

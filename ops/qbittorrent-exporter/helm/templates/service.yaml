@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: qbittorrent-exporter
+spec:
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 17871
+      targetPort: 17871
+  selector:
+    app.kubernetes.io/instance: qbittorrent-exporter
+    app.kubernetes.io/name: qbittorrent-exporter
+  type: ClusterIP
