@@ -34,19 +34,7 @@ persistence:
       mountPath: /downloads
 
 metrics:
-  enabled: true
-  serviceMonitor:
-    enabled: true
-  exporter:
-    image:
-      repository: esanchezm/prometheus-qbittorrent-exporter
-      tag: v1.2.0
-      pullPolicy: IfNotPresent
-    env:
-      user: "admin"
-      password: "adminadmin"
-      port: 9022
-      logLevel: INFO
+  enabled: false
 
 btService:
   type: ClusterIP
