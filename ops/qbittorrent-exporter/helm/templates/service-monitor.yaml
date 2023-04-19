@@ -10,7 +10,6 @@ spec:
     any: true
   endpoints:
     - port: metrics
-      honorLabels: true
       interval: 15s
       scrapeTimeout: 5s
       path: /metrics
