@@ -47,3 +47,9 @@ metrics:
       password: "${QBITTORRENT_PASSWORD}"
       port: 9022
       logLevel: INFO
+
+btService:
+  type: ClusterIP
+  port: 6881
+  externalIps:
+    - 192.168.0.12
