@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: qbittorrent-exporter
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qbittorrent-exporter
+      app.kubernetes.io/instance: qbittorrent-exporter
+  endpoints:
+    - port: metrics
+      interval: 15s
+      scrapeTimeout: 5s
+      path: /metrics

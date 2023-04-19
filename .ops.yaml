@@ -14,6 +14,7 @@ include:
   - ops/phpmyadmin/.ops.yaml
   - ops/jellyfin/.ops.yaml
   - ops/qbittorrent/.ops.yaml
+  - ops/qbittorrent-exporter/.ops.yaml
 
 dep:
   ops:
