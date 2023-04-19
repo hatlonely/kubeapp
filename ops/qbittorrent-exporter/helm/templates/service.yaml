@@ -2,6 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   name: qbittorrent-exporter
+  labels:
+    name: qbittorrent-exporter
 spec:
   ports:
     - name: metrics
