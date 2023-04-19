@@ -14,14 +14,14 @@ task:
       2. 设置 -> web UI -> 简体中文
       3. 设置 -> Web UI -> 修改密码
       4. 设置 -> Web UI -> 关闭 Host Header 属性验证
-      6. 设置 -> 下载 -> 默认保存路径 -> /nfs
-      7. 设置 -> 下载 -> 保存未完成的 torrent 到 /nfs/incomplete
-      8. 添加 qbittorrent dashboard 15116
+      5. 添加 qbittorrent dashboard 15116
+      6. 添加 tracker 服务器，<https://github.com/ngosang/trackerslist/blob/master/trackers_best.txt>
 
       ## 参考链接
 
       - 仓库地址: <https://artifacthub.io/packages/helm/alekc/qbittorrent>
       - qbittorrent-dashboard: <https://grafana.com/grafana/dashboards/15116-qbittorrent-dashboard/>
+      - tracker 服务器: <https://github.com/ngosang/trackerslist/blob/master/trackers_best.txt>
     args:
       cmd:
         type: string
