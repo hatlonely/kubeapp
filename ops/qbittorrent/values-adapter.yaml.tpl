@@ -31,7 +31,7 @@ persistence:
         readOnly: false
   additionalMounts:
     - name: nfs
-      mountPath: /nfs
+      mountPath: /downloads
 
 metrics:
   enabled: true
@@ -44,12 +44,22 @@ metrics:
       pullPolicy: IfNotPresent
     env:
       user: "admin"
-      password: "${QBITTORRENT_PASSWORD}"
+      password: "adminadmin"
       port: 9022
       logLevel: INFO
 
 btService:
   type: ClusterIP
-  port: 6881
+  port: 16881
   externalIps:
-    - 192.168.0.12
+    - 192.168.0.22
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: "kubernetes.io/hostname"
+            operator: In
+            values:
+              - "hatlonely-mac-mini-1"
