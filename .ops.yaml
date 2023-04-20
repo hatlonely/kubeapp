@@ -15,6 +15,7 @@ include:
   - ops/jellyfin/.ops.yaml
   - ops/qbittorrent/.ops.yaml
   - ops/qbittorrent-exporter/.ops.yaml
+  - ops/nextcloud/.ops.yaml
 
 dep:
   ops:
@@ -83,9 +84,6 @@ task:
       - kubectl taint nodes hatlonely-vc66-0 "node-role.kubernetes.io/control-plane=:NoSchedule-"
       - kubectl taint nodes hatlonely-vc66-1 "node-role.kubernetes.io/control-plane=:NoSchedule-"
       - kubectl taint nodes hatlonely-vc66-2 "node-role.kubernetes.io/control-plane=:NoSchedule-"
-  add-node-taint:
-    step:
-      
   namespace:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
@@ -160,6 +158,7 @@ task:
       - helm repo add utkuozdemir https://utkuozdemir.org/helm-charts
       - helm repo add truecharts https://charts.truecharts.org/
       - helm repo add alekc https://charts.alekc.dev
+      - helm repo add nextcloud https://nextcloud.github.io/helm/
       - helm repo update
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
