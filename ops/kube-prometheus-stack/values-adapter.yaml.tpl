@@ -57,6 +57,8 @@ grafana:
       repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/k8s-sidecar"
   persistence:
     enabled: true
+  initChownData:
+    enabled: false
   ingress:
     enabled: true
     annotations:
