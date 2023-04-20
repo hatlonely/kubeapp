@@ -8,9 +8,15 @@ task:
       ops --variable .cfg/dev.yaml -a run --env dev --task nextcloud --cmd=install
       ops --variable .cfg/dev.yaml -a run --env dev --task nextcloud --cmd=password
 
+      ## 问题
+      
+      启动不了，httpd 会接收 SIGWINCH 然后退出，而这个信号 containerd 一定会发出，这里有冲突，没找到解决方案
+
       ## 参考链接
 
       - 仓库地址: <https://artifacthub.io/packages/helm/nextcloud/nextcloud>
+      - Apache process shutting down on SIGWINCH: <https://github.com/nextcloud/docker/issues/1423>
+      - SIGWINCH issue <https://github.com/docker-library/php/issues/64>
     args:
       cmd:
         type: string
