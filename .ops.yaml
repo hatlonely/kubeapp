@@ -35,6 +35,7 @@ env:
     MINIO_PASSWORD: "{{.minio.password}}"
     GRAFANA_PASSWORD: "{{.grafana.password}}"
     QBITTORRENT_PASSWORD: "{{.qbittorrent.password}}"
+    NEXTCLOUD_PASSWORD: "{{.nextcloud.password}}"
     PULL_SECRET_NAME: "hatlonely-pull-secret"
     DOMAIN: hatlonely.com
     DASHBOARD_HOST: dashboard.${DOMAIN}
@@ -47,6 +48,7 @@ env:
     JELLYFIN_HOST: jellyfin.${DOMAIN}
     QBITTORRENT_HOST: qbittorrent.${DOMAIN}
     MINIO_CONSOLE_HOST: console.minio.${DOMAIN}
+    NEXTCLOUD_HOST: nextcloud.${DOMAIN}
     MINIO_TLS: minio-tls
     MINIO_CONSOLE_TLS: minio-console-tls
     PHPMYADMIN_TLS: phpmyadmin-tls

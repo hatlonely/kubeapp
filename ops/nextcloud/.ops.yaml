@@ -38,5 +38,5 @@ task:
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
-          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.nextcloud-password}" | base64 --decode; echo
+          "password") kubectl get secret --namespace dev nextcloud -o jsonpath="{.data.nextcloud-password}" | base64 --decode; echo
         esac
