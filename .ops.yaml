@@ -16,6 +16,7 @@ include:
   - ops/qbittorrent/.ops.yaml
   - ops/qbittorrent-exporter/.ops.yaml
   - ops/nextcloud/.ops.yaml
+  - ops/seafile/.ops.yaml
 
 dep:
   ops:
@@ -49,9 +50,8 @@ env:
     QBITTORRENT_HOST: qbittorrent.${DOMAIN}
     MINIO_CONSOLE_HOST: console.minio.${DOMAIN}
     NEXTCLOUD_HOST: nextcloud.${DOMAIN}
-    MINIO_TLS: minio-tls
-    MINIO_CONSOLE_TLS: minio-console-tls
-    PHPMYADMIN_TLS: phpmyadmin-tls
+    SEAFILE_HOST: seafile.${DOMAIN}
+    SEAFILE_PASSWORD: "{{.seafile.password}}"
     HELM_HOME: "${TMP}"
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"
@@ -161,6 +161,7 @@ task:
       - helm repo add truecharts https://charts.truecharts.org/
       - helm repo add alekc https://charts.alekc.dev
       - helm repo add nextcloud https://nextcloud.github.io/helm/
+      - helm repo add geek-cookbook https://geek-cookbook.github.io/charts/
       - helm repo update
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
@@ -320,6 +321,8 @@ task:
         default: diff
         validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "password"]
     const:
+      MINIO_TLS: minio-tls
+      MINIO_CONSOLE_TLS: minio-console-tls
       app: minio
       chart: minio/minio
       version: 3.3.0
