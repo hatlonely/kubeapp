@@ -55,6 +55,8 @@ grafana:
   sidecar:
     image:
       repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/k8s-sidecar"
+  persistence:
+    enabled: true
   ingress:
     enabled: true
     annotations:

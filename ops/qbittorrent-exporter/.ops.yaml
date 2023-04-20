@@ -1,14 +1,23 @@
 task:
   qbittorrent-exporter:
     description: |      
-      ## ops 命令
+      ## 安装
 
       ops --variable .cfg/dev.yaml -a run --env dev --task qbittorrent-exporter --cmd=image
       ops --variable .cfg/dev.yaml -a run --env dev --task qbittorrent-exporter --cmd=install
 
+      ## 设置
+
+      1. 进入容器: `kubectl exec kube-prometheus-stack-grafana-6d5d86bf57-d4l67 -n monitoring -ti -c grafana -- sh`
+      2. 安装 grafana-piechart-panel 插件 `grafana-cli plugins install grafana-piechart-panel`
+      3. 添加 dashboard 15116
+
       ## 参考链接
 
-      - 镜像地址: <https://hub.docker.com/r/caseyscarborough/qbittorrent-exporter>
+      - 项目地址: <https://github.com/caseyscarborough/qbittorrent-grafana-dashboard>
+      - 仓库地址: <https://hub.docker.com/r/caseyscarborough/qbittorrent-exporter>
+      - grafana dashbaord 地址: <https://grafana.com/grafana/dashboards/15116-qbittorrent-dashboard/>
+      - grafana piechart pannel 插件地址: <https://grafana.com/grafana/plugins/grafana-piechart-panel/>
     args:
       cmd:
         type: string

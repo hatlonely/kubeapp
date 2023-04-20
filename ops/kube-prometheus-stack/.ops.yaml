@@ -1,12 +1,25 @@
 task:
   kube-prometheus-stack:
     description: |
-      https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-      https://github.com/prometheus-operator/prometheus-operator
-      https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
-      https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics
-      https://github.com/grafana/helm-charts/tree/main/charts/grafana
-      https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter
+      ## 安装
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task kube-prometheus-stack --cmd=password
+
+      ## 设置
+
+      1. 添加 dashboard 1860
+
+      ## 参考链接：
+      - <https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack>
+      - <https://github.com/prometheus-operator/prometheus-operator>
+      - <https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack>
+      - <https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics>
+      - <https://github.com/grafana/helm-charts/tree/main/charts/grafana>
+      - <https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter>
+      - Node Exporter Full dasbhoard: <https://grafana.com/grafana/dashboards/1860-node-exporter-full/>
     args:
       cmd:
         type: string
