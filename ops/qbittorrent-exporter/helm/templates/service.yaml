@@ -9,8 +9,6 @@ spec:
     - name: metrics
       protocol: TCP
       port: 17871
-      targetPort: 17871
   selector:
     app.kubernetes.io/instance: qbittorrent-exporter
     app.kubernetes.io/name: qbittorrent-exporter
-  type: ClusterIP
