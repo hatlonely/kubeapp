@@ -8,6 +8,8 @@ imagePullSecrets:
 
 ingress:
   host: ${WEBDAV_HOST}
+  tls:
+    enabled: false
 
 urls:
   /:
