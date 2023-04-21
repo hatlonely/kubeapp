@@ -1,0 +1,42 @@
+task:
+  webdav:
+    description: |      
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task webdav --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task webdav --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task webdav --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task webdav --cmd=password
+
+      ## 参考链接
+
+      - 仓库地址: <https://artifacthub.io/packages/helm/alekc/webdav>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+      SECRET_NAME: webdav-tls
+      app: webdav
+      chart: k8s-webdav/webdav
+      version: 0.0.6
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "linuxserver" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "webdav" "4.5.2"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.webdav-password}" | base64 --decode; echo
+        esac

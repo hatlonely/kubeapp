@@ -14,9 +14,9 @@ ingress:
             pathType: ImplementationSpecific
 
 env:
-  FLOOD_OPTION_rundir: /data
-  FLOOD_OPTION_allowedpath: /data
-  FLOOD_OPTION_auth: "none"
-  FLOOD_OPTION_qurl: "qbittorrent-webui"
-  FLOOD_OPTION_quser: "admin"
-  FLOOD_OPTION_qpaas: "${QBITTORRENT_PASSWORD}"
+  FLOOD_rundir: /data
+  FLOOD_allowedpath: /data
+  FLOOD_auth: "none"
+  FLOOD_qurl: "qbittorrent-webui"
+  FLOOD_quser: "admin"
+  FLOOD_qpaas: "${QBITTORRENT_PASSWORD}"

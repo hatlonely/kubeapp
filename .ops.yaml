@@ -17,7 +17,7 @@ include:
   - ops/qbittorrent-exporter/.ops.yaml
   - ops/nextcloud/.ops.yaml
   - ops/seafile/.ops.yaml
-  - ops/flood/.ops.yaml
+  - ops/qflood/.ops.yaml
   - ops/webdav/.ops.yaml
 
 dep:
@@ -55,6 +55,7 @@ env:
     SEAFILE_HOST: seafile.${DOMAIN}
     SEAFILE_PASSWORD: "{{.seafile.password}}"
     FLOOD_HOST: flood.${DOMAIN}
+    WEBDAV_HOST: webdav.${DOMAIN}
     HELM_HOME: "${TMP}"
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"
@@ -165,6 +166,7 @@ task:
       - helm repo add alekc https://charts.alekc.dev
       - helm repo add nextcloud https://nextcloud.github.io/helm/
       - helm repo add geek-cookbook https://geek-cookbook.github.io/charts/
+      - helm repo add k8s-webdav https://danuk.github.io/k8s-webdav/
       - helm repo update
   mongo:
     description: https://github.com/bitnami/charts/tree/master/bitnami/mongodb
