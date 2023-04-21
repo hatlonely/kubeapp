@@ -1,3 +1,11 @@
+image:
+  repository: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/httpd"
+  tag: "2.4"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: "${PULL_SECRET_NAME}"
+
 ingress:
   host: ${WEBDAV_HOST}
 

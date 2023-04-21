@@ -31,7 +31,7 @@ task:
         chart=ops/webdav/helm
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "linuxserver" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "webdav" "4.5.2"
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "library" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "httpd" "2.4"
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
