@@ -17,6 +17,7 @@ include:
   - ops/qbittorrent-exporter/.ops.yaml
   - ops/nextcloud/.ops.yaml
   - ops/seafile/.ops.yaml
+  - ops/flood/.ops.yaml
 
 dep:
   ops:
@@ -52,6 +53,7 @@ env:
     NEXTCLOUD_HOST: nextcloud.${DOMAIN}
     SEAFILE_HOST: seafile.${DOMAIN}
     SEAFILE_PASSWORD: "{{.seafile.password}}"
+    FLOOD_HOST: flood.${DOMAIN}
     HELM_HOME: "${TMP}"
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"
