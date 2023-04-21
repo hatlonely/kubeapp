@@ -83,6 +83,11 @@ spec:
         {{- else if eq .Values.persistence.type "hostPath" }}
           hostPath:
             path: {{ .Values.persistence.hostPath }}
+        {{- else if eq .Values.persistence.type "nfs" }}
+          nfs:
+            server: {{ .Values.persistence.nfs.server }}
+            path: {{ .Values.persistence.nfs.path }}
+            readOnly: {{ .Values.persistence.nfs.readOnly }}
         {{- else }}
           emptyDir: {}
         {{- end }}

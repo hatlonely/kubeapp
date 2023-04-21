@@ -48,6 +48,7 @@ persistence:
   finalizers:
     - kubernetes.io/pvc-protection
   # existingClaim:
+  nfs: {}
 
 replicaCount: 1
 
