@@ -56,6 +56,7 @@ env:
     SEAFILE_PASSWORD: "{{.seafile.password}}"
     FLOOD_HOST: flood.${DOMAIN}
     WEBDAV_HOST: webdav.${DOMAIN}
+    WEBDAV_PASSWORD: webdav.${DOMAIN}
     HELM_HOME: "${TMP}"
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"

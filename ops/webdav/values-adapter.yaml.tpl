@@ -7,7 +7,7 @@ urls:
       password: keaiduo1
 
 persistence:
-  enabled: false
+  enabled: true
   type: nfs
   nfs:
     server: 192.168.0.101
