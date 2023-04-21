@@ -42,16 +42,17 @@ affinity:
                 - "hatlonely-vc66-1"
                 - "hatlonely-vc66-2"
 
-containerPorts:
-  metrics: 10254
+# 这个 metrics 没有成功，service 配置看上去没问题，不知道是不是两个 service 都是一个 deployment 有冲突
+#containerPorts:
+#  metrics: 9913
 
-metrics:
-  enabled: true
-  service:
-    ports:
-      metrics: 10254
-  serviceMonitor:
-    enabled: true
-    interval: 30s
-    labels:
-      release: kube-prometheus-stack
+#metrics:
+#  enabled: true
+#  service:
+#    ports:
+#      metrics: 10254
+#  serviceMonitor:
+#    enabled: true
+#    interval: 30s
+#    labels:
+#      release: kube-prometheus-stack
