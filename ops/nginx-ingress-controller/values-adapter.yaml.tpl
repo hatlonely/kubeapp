@@ -42,8 +42,14 @@ affinity:
                 - "hatlonely-vc66-1"
                 - "hatlonely-vc66-2"
 
+containerPorts:
+  metrics: 10254
+
 metrics:
   enabled: true
+  service:
+    ports:
+      metrics: 10254
   serviceMonitor:
     enabled: true
     interval: 30s
