@@ -23,3 +23,13 @@ persistence:
     server: 192.168.0.101
     path: /nfs/Transmission
     readOnly: false
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: "kubernetes.io/hostname"
+            operator: In
+            values:
+              - "hatlonely-vc66-2"
