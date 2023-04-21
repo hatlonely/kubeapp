@@ -41,3 +41,11 @@ affinity:
                 - "hatlonely-vc66-0"
                 - "hatlonely-vc66-1"
                 - "hatlonely-vc66-2"
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    labels:
+      release: kube-prometheus-stack
