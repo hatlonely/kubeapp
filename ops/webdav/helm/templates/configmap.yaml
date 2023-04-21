@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: httpd-conf
+data:
+  httpd.conf: |-
+{{ tpl .Values.httpd_conf . | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: htpasswd
+data:
+{{- range $path, $users := .Values.urls }}
+  {{- if kindIs "slice" $users }}
+  {{ include "returnUrlPathHtpasswdFilename" $path }}: |-
+    {{ range $user := $users }}
+      {{- $username := $user.user | required ".Values.urls[*].user is required if if the URL value is defined as list" }}
+      {{- $password := $user.password | required ".Values.urls[*].password is required if if the URL value is defined as list" }}
+      {{- htpasswd $username $password }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
