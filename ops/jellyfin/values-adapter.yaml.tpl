@@ -16,10 +16,10 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-#  tls:
-#    - secretName: "${SECRET_NAME}"
-#      hosts:
-#        - "${JELLYFIN_HOST}"
+  tls:
+    - secretName: "${TLS_SECRET}"
+      hosts:
+        - "${JELLYFIN_HOST}"
 
 persistence:
   config:
