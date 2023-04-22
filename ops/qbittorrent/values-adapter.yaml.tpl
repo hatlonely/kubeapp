@@ -13,10 +13,10 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-#  tls:
-#    - secretName: "${SECRET_NAME}"
-#      hosts:
-#        - "${QBITTORRENT_HOST}"
+  tls:
+    - secretName: "${TLS_SECRET}"
+      hosts:
+        - "${QBITTORRENT_HOST}"
 
 env:
   TZ: "Asia/Shanghai"

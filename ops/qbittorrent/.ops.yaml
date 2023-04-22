@@ -28,7 +28,7 @@ task:
         default: diff
         validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
     const:
-      SECRET_NAME: qbittorrent-tls
+#      SECRET_NAME: qbittorrent-tls
       app: qbittorrent
       chart: alekc/qbittorrent
       version: 0.2.0
