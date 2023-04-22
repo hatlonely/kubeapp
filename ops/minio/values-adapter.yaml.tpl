@@ -1,3 +1,6 @@
+securityContext:
+  enabled: false
+
 persistence:
   enabled: true
   storageClass: "${STORAGE_CLASS}"
