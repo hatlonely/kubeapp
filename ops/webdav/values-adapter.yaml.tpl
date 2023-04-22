@@ -14,8 +14,8 @@ ingress:
 
 urls:
   /:
-    - user: hatlonely
-      password: keaiduo1
+    - user: ${WEBDAV_USERNAME}
+      password: ${WEBDAV_PASSWORD}
 
 persistence:
   enabled: true
