@@ -1,12 +1,4 @@
-provisionDataStore:
-  cassandra: false
-  elasticsearch: true
-  kafka: false
-
-storage:
-  type: elasticsearch
-
-query:
+allInOne:
   ingress:
     enabled: true
     annotations:
