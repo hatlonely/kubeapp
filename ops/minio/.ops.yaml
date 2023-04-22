@@ -34,6 +34,10 @@ task:
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
+          "password")
+            kubectl get secret --namespace "${NAMESPACE}" minio -o jsonpath="{.data.rootUser}" | base64 --decode; echo
+            kubectl get secret --namespace "${NAMESPACE}" minio -o jsonpath="{.data.rootPassword}" | base64 --decode; echo
+            ;;
           "delete")
             helm delete -n "${NAMESPACE}" "${app}"
             kubectl delete pvc export-minio-0 -n "${NAMESPACE}"
