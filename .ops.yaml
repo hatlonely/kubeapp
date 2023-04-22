@@ -62,8 +62,8 @@ env:
     SEAFILE_HOST: seafile.${DOMAIN}
     SEAFILE_PASSWORD: "{{.seafile.password}}"
     FLOOD_HOST: flood.${DOMAIN}
-    WEBDAV_HOST: webdav.${DOMAIN}
-    WEBDAV_PASSWORD: webdav.${DOMAIN}
+    WEBDAV_USERNAME: "{{.webdav.username}}"
+    WEBDAV_PASSWORD: "{{.webdav.password}}"
     HELM_HOME: "${TMP}"
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"
@@ -100,7 +100,7 @@ task:
         mkdir -p ${TMP}/tls
         echo "${TLS_KEY}" | tr "@" "\n" > "${TMP}/tls/tls.key"
         echo "${TLS_CRT}" | tr "@" "\n" > "${TMP}/tls/tls.crt"
-        for namespace in "${NAMESPACE}" "kube-system"; do
+        for namespace in "${NAMESPACE}" "kube-system" "monitoring"; do
           kubectl get secret "${TLS_SECRET}" -n "${namespace}" 2>/dev/null 1>&2 && {
           kubectl create secret tls "${TLS_SECRET}" -n "${namespace}" \
               --cert=${TMP}/tls/tls.crt \
