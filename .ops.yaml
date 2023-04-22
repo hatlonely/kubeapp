@@ -22,6 +22,7 @@ include:
   - ops/mongodb/.ops.yaml
   - ops/minio/.ops.yaml
   - ops/jaeger/.ops.yaml
+  - ops/vscode/.ops.yaml
 
 dep:
   ops:
@@ -171,6 +172,7 @@ task:
       - helm repo add nextcloud https://nextcloud.github.io/helm/
       - helm repo add geek-cookbook https://geek-cookbook.github.io/charts/
       - helm repo add k8s-webdav https://danuk.github.io/k8s-webdav/
+      - helm repo add kubegemsapp https://charts.kubegems.io/kubegemsapp
       - helm repo update
   redis-cluster:
     description: https://github.com/bitnami/charts/tree/master/bitnami/redis-cluster
