@@ -21,3 +21,7 @@ ingress:
   #  - secretName: code-server
   #    hosts:
   #      - code-server.example.loc
+
+service:
+  type: ClusterIP
+  port: 8443
