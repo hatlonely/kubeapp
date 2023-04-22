@@ -27,7 +27,7 @@ task:
         validation: x in ["pull", "image", "crds", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: monitoring
-      SECRET_NAME: grafana-tls
+#      SECRET_NAME: grafana-tls
       app: kube-prometheus-stack
       chart: prometheus-community/kube-prometheus-stack
       version: 45.10.1

@@ -69,7 +69,7 @@ grafana:
     hosts:
       - "${GRAFANA_HOST}"
     tls:
-      - secretName: "${SECRET_NAME}"
+      - secretName: "${TLS_SECRET}"
         hosts:
           - "${GRAFANA_HOST}"
   grafana.ini:
