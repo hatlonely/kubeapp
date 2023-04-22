@@ -21,6 +21,7 @@ include:
   - ops/webdav/.ops.yaml
   - ops/mongodb/.ops.yaml
   - ops/minio/.ops.yaml
+  - ops/jaeger/.ops.yaml
 
 dep:
   ops:

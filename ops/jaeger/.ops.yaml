@@ -10,7 +10,7 @@ task:
       NAMESPACE: monitoring
       app: jaeger
       chart: jaegertracing/jaeger
-      version: 0.46.4
+      version: 0.69.1
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
