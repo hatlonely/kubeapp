@@ -23,5 +23,4 @@ ingress:
   #      - code-server.example.loc
 
 service:
-  type: ClusterIP
   port: 8443
