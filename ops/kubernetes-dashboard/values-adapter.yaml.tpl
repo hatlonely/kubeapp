@@ -17,7 +17,7 @@ ingress:
     - ${DASHBOARD_HOST}
 
   tls:
-    - secretName: k8s-secret
+    - secretName: ${TLS_SECRET}
       hosts:
         - ${DASHBOARD_HOST}
 
