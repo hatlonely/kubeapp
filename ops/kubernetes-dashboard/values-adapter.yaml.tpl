@@ -15,7 +15,6 @@ ingress:
     - /
   hosts:
     - ${DASHBOARD_HOST}
-
   tls:
     - secretName: ${TLS_SECRET}
       hosts:
