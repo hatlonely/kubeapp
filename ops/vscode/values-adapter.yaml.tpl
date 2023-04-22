@@ -1,3 +1,7 @@
+image:
+  repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/code-server
+  tag: '4.12.0'
+
 securityContext:
   enabled: false
 

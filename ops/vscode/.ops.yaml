@@ -33,7 +33,7 @@ task:
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "registry.cn-beijing.aliyuncs.com" "kubegemsapp" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "code-server" "4.11.0"
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "linuxserver" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "code-server" "4.12.0"
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
