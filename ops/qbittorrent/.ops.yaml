@@ -14,6 +14,7 @@ task:
       2. 设置 -> web UI -> 简体中文
       3. 设置 -> Web UI -> 修改密码
       4. 设置 -> Web UI -> 关闭 Host Header 属性验证
+      5. 设置 -> 连接 -> 监听端口 16881
       5. 添加 qbittorrent dashboard 15116
       6. 添加 tracker 服务器，<https://github.com/ngosang/trackerslist/blob/master/trackers_best.txt>
 
