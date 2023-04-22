@@ -3,6 +3,7 @@ task:
     description: |
       ## 参考链接
       
+      - 仓库地址: <https://artifacthub.io/packages/helm/minio-official/minio>
       - 项目地址: <https://github.com/minio/minio/tree/master/helm/minio>
       - 官网文档: <https://docs.min.io/docs/minio-client-quickstart-guide.html>
     args:
