@@ -7,9 +7,10 @@ imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
 
 ingress:
-  host: ${WEBDAV_HOST}
+  host: webdav.${DOMAIN}}
   tls:
-    enabled: false
+    enabled: true
+    secret: ${TLS_SECRET}
 
 urls:
   /:

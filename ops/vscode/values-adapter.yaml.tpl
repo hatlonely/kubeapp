@@ -17,10 +17,10 @@ ingress:
     - host: vscode.${DOMAIN}
       paths:
         - /
-  #tls:
-  #  - secretName: code-server
-  #    hosts:
-  #      - code-server.example.loc
+  tls:
+    - secretName: ${TLS_SECRET}
+      hosts:
+        - vscode.${DOMAIN}
 
 service:
   port: 8443

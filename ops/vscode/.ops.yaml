@@ -19,7 +19,7 @@ task:
         default: diff
         validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
     const:
-      SECRET_NAME: vscode-tls
+#      SECRET_NAME: vscode-tls
       app: vscode
       chart: kubegemsapp/vscode
       version: 1.0.5
