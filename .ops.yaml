@@ -20,6 +20,7 @@ include:
   - ops/qflood/.ops.yaml
   - ops/webdav/.ops.yaml
   - ops/mongodb/.ops.yaml
+  - ops/minio/.ops.yaml
 
 dep:
   ops:
@@ -289,42 +290,4 @@ task:
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete") helm delete -n "${NAMESPACE}" "${app}";;
           "password") kubectl get secret --namespace "${NAMESPACE}" mongo-mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 --decode; echo
-        esac
-  minio:
-    description: |
-      https://github.com/minio/minio/tree/master/helm/minio
-      https://docs.min.io/docs/minio-client-quickstart-guide.html
-    args:
-      cmd:
-        type: string
-        default: diff
-        validation: x in ["diff", "install", "delete", "upgrade", "status", "image", "password"]
-    const:
-      MINIO_TLS: minio-tls
-      MINIO_CONSOLE_TLS: minio-console-tls
-      app: minio
-      chart: minio/minio
-      version: 3.3.0
-    step:
-      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
-      - |
-        case "${cmd}" in
-          "image")
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "minio" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "mc" "RELEASE.2021-11-16T20-37-36Z"
-            sh ${DEP}/ops/tool/image.sh sync "quay.io" "minio" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "minio" "RELEASE.2021-11-24T23-19-33Z"
-            ;;
-          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
-          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
-          "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete")
-            helm delete -n "${NAMESPACE}" "${app}"
-            kubectl delete pvc export-minio-0 -n "${NAMESPACE}"
-            kubectl delete pvc export-minio-1 -n "${NAMESPACE}"
-            kubectl delete pvc export-minio-2 -n "${NAMESPACE}"
-            kubectl delete pvc export-minio-3 -n "${NAMESPACE}"
-            kubectl delete pvc export-minio-4 -n "${NAMESPACE}"
-            kubectl delete pvc export-minio-5 -n "${NAMESPACE}"
-            ;;
         esac

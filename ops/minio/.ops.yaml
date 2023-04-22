@@ -1,0 +1,45 @@
+task:
+  minio:
+    description: |
+      ## 参考链接
+      
+      - 项目地址: <https://github.com/minio/minio/tree/master/helm/minio>
+      - 官网文档: <https://docs.min.io/docs/minio-client-quickstart-guide.html>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "install", "delete", "upgrade", "status", "image", "password"]
+    const:
+      MINIO_TLS: minio-tls
+      MINIO_CONSOLE_TLS: minio-console-tls
+      app: minio
+      chart: minio/minio
+      version: 5.0.8
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "minio" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "minio" "RELEASE.2023-04-13T03-08-07Z"
+            sh ${DEP}/ops/tool/image.sh sync "quay.io" "minio" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "mc" "RELEASE.2023-04-12T02-21-51Z"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete")
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl delete pvc export-minio-0 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-1 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-2 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-3 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-4 -n "${NAMESPACE}"
+            kubectl delete pvc export-minio-5 -n "${NAMESPACE}"
+            ;;
+        esac
