@@ -1,0 +1,44 @@
+task:
+  vscode:
+    description: |      
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task vscode --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task vscode --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task vscode --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task vscode --cmd=password
+
+      ## 参考链接
+
+      - 仓库地址: <https://artifacthub.io/packages/helm/alekc/vscode>
+      - vscode-dashboard: <https://grafana.com/grafana/dashboards/15116-vscode-dashboard/>
+      - tracker 服务器: <https://github.com/ngosang/trackerslist/blob/master/trackers_best.txt>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+      SECRET_NAME: vscode-tls
+      app: vscode
+      chart: kubegemsapp/vscode
+      version: 1.0.5
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "registry.cn-beijing.aliyuncs.com" "kubegemsapp" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "code-server" "4.11.0"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" code -o jsonpath="{.data.password}" | base64 --decode; echo
+        esac
