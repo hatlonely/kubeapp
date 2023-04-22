@@ -5,7 +5,7 @@ task:
       cmd:
         type: string
         default: diff
-        validation: x in ["image", "diff", "install", "delete", "upgrade", "status", "password"]
+        validation: x in ["pull", "image", "diff", "install", "delete", "upgrade", "status", "password"]
     const:
       NAMESPACE: monitoring
       app: jaeger
