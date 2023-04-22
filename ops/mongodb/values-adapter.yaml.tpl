@@ -7,10 +7,7 @@ image:
   repository: "${REGISTRY_NAMESPACE}/mongodb"
 
 persistence:
-  enabled: true
-  storageClass: "${STORAGE_CLASS}"
-  size: 50Gi
+  enabled: false
 
 auth:
   rootPassword: "${MONGO_PASSWORD}"
-
