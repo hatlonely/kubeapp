@@ -28,7 +28,7 @@ persistence:
     customVolume:
       nfs:
         server: 192.168.0.101
-        path: /nfs/Transmission
+        path: /nfs/kubeapps/jellyfin
         readOnly: false
   data:
     enabled: true
@@ -36,7 +36,7 @@ persistence:
     customVolume:
       nfs:
         server: 192.168.0.101
-        path: /nfs/Transmission
+        path: /nfs/webdav/qbittorrent
         readOnly: false
 
 affinity:
