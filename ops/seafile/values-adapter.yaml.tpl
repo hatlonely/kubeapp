@@ -12,6 +12,10 @@ ingress:
         paths:
           - path: /
             pathType: ImplementationSpecific
+    tls:
+      - secretName: "${TLS_SECRET}"
+        hosts:
+          - "${SEAFILE_HOST}"
 
 env:
   TIME_ZONE: Etc/UTC

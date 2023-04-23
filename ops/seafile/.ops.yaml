@@ -23,7 +23,7 @@ task:
         default: diff
         validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
     const:
-      SECRET_NAME: seafile-tls
+#      SECRET_NAME: seafile-tls
       app: seafile
       chart: geek-cookbook/seafile
       version: 3.2.0
