@@ -16,13 +16,22 @@ urls:
   /:
     - user: ${WEBDAV_USERNAME}
       password: ${WEBDAV_PASSWORD}
+  /home/haltonely:
+    - user: ${WEBDAV_USERNAME}
+      password: ${WEBDAV_PASSWORD}
+  /home/liang:
+    - user: ${WEBDAV_USERNAME}
+      password: ${WEBDAV_PASSWORD}
+  /home/zach:
+    - user: ${WEBDAV_USERNAME}
+      password: ${WEBDAV_PASSWORD}
 
 persistence:
   enabled: true
   type: nfs
   nfs:
     server: 192.168.0.101
-    path: /nfs/Transmission
+    path: /nfs/webdav
     readOnly: false
 
 affinity:

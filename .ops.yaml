@@ -68,6 +68,9 @@ env:
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"
     TLS_SECRET: "hatlonely-tls"
+    HATLONELY_PASSWORD: "{{.users.hatlonely}}"
+    LIANG_PASSWORD: "{{.users.liang}}"
+    ZACH_PASSWORD: "{{.users.zach}}"
   dev:
     K8S_CONTEXT: kubernetes-admin@kubernetes
     NAMESPACE: dev
