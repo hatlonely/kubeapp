@@ -16,6 +16,9 @@ urls:
   /:
     - user: ${WEBDAV_USERNAME}
       password: ${WEBDAV_PASSWORD}
+  /qbittorrent:
+    - user: qbittorrent
+      password: ${QBITTORRENT_PASSWORD}
   /home/haltonely:
     - user: hatlonely
       password: ${HATLONELY_PASSWORD}
