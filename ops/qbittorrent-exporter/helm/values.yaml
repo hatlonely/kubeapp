@@ -3,3 +3,5 @@ image:
   tag: v1.3.2
 
 password: "adminadmin"
+
+affinity: {}

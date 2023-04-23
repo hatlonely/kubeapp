@@ -3,3 +3,13 @@ image:
   tag: v1.3.2
 
 password: "${QBITTORRENT_PASSWORD}"
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: "kubernetes.io/hostname"
+            operator: In
+            values:
+              - "hatlonely-mac-mini-1"

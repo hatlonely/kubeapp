@@ -28,3 +28,7 @@ spec:
           ports:
             - name: metrics
               containerPort: 17871
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
