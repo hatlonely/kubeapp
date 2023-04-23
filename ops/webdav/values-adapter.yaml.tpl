@@ -17,14 +17,14 @@ urls:
     - user: ${WEBDAV_USERNAME}
       password: ${WEBDAV_PASSWORD}
   /home/haltonely:
-    - user: ${WEBDAV_USERNAME}
-      password: ${WEBDAV_PASSWORD}
+    - user: hatlonely
+      password: ${HATLONELY_PASSWORD}
   /home/liang:
-    - user: ${WEBDAV_USERNAME}
-      password: ${WEBDAV_PASSWORD}
+    - user: liang
+      password: ${LIANG_PASSWORD}
   /home/zach:
-    - user: ${WEBDAV_USERNAME}
-      password: ${WEBDAV_PASSWORD}
+    - user: zach
+      password: ${ZACH_PASSWORD}
 
 persistence:
   enabled: true
