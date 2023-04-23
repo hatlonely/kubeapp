@@ -40,7 +40,7 @@ task:
         case "${cmd}" in
           "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
         esac
-        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        chart=ops/qbittorrent/helm
         case "${cmd}" in
           "image")
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "linuxserver" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "qbittorrent" "4.5.2"

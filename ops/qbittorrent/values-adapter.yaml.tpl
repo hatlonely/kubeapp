@@ -24,14 +24,21 @@ env:
 persistence:
   enabled: true
   additionalVolumes:
-    - name: nfs
+    - name: downloads
       nfs:
         server: 192.168.0.101
-        path: /nfs/Transmission
+        path: /nfs/webdav/qbittorrent
+        readOnly: false
+    - name: config
+      nfs:
+        server: 192.168.0.101
+        path: /nfs/kubeapps/qbittorrent
         readOnly: false
   additionalMounts:
-    - name: nfs
+    - name: downloads
       mountPath: /downloads
+    - name: config
+      mountPath: /config
 
 metrics:
   enabled: false
@@ -40,7 +47,7 @@ btService:
   type: ClusterIP
   port: 16881
   externalIps:
-    - 192.168.0.22
+    - 192.168.0.190
 
 affinity:
   nodeAffinity:
