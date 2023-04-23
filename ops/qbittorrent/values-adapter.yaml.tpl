@@ -59,4 +59,5 @@ affinity:
           - key: "kubernetes.io/hostname"
             operator: In
             values:
+              - "hatlonely-mac-mini-0"
               - "hatlonely-mac-mini-1"
