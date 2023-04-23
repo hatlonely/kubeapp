@@ -27,11 +27,13 @@ persistence:
     - name: downloads
       nfs:
         server: 192.168.0.101
+        # 在 nfs 上执行命令变更目录归属 chown nobody:share -R .
         path: /nfs/webdav/qbittorrent
         readOnly: false
     - name: config
       nfs:
         server: 192.168.0.101
+        # 在 nfs 上执行命令变更目录归属 chown nobody:share -R .
         path: /nfs/kubeapps/qbittorrent
         readOnly: false
   additionalMounts:
