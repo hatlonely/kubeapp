@@ -19,13 +19,13 @@ urls:
   /qbittorrent:
     - user: qbittorrent
       password: ${QBITTORRENT_PASSWORD}
-  /home/hatlonely:
+  /hatlonely:
     - user: hatlonely
       password: ${HATLONELY_PASSWORD}
-  /home/liang:
+  /liang:
     - user: liang
       password: ${LIANG_PASSWORD}
-  /home/zach:
+  /zach:
     - user: zach
       password: ${ZACH_PASSWORD}
 
