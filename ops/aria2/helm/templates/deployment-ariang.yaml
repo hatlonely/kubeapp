@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   namespace: {{.Release.Namespace}}
   name: ariang
-  annotations:
+  labels:
     app.kubernetes.io/instance: ariang
     app.kubernetes.io/name: ariang
 spec:

@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   namespace: {{.Release.Namespace}}
   name: aria2-pro
-  annotations:
+  labels:
     app.kubernetes.io/instance: aria2-pro
     app.kubernetes.io/name: aria2-pro
 spec:
