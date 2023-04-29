@@ -1,0 +1,44 @@
+task:
+  handle:
+    description: |
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task handle --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task handle --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task handle --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task handle --cmd=password
+
+      ## 参考链接
+
+      - 仓库地址: <https://github.com/antfu/handle>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+      SECRET_NAME: handle-tls
+      app: handle
+      chart: k8s-handle/handle
+      version: 0.0.1
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=ops/handle/helm
+        case "${cmd}" in
+          "image")
+            docker build -t ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/handle:${version} -f ops/handle/Dockerfile ops/handle
+            docker login ${REGISTRY_ENDPOINT}
+            # sh ${DEP}/ops/tool/image.sh sync "docker.io" "library" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "httpd" "2.4"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.handle-password}" | base64 --decode; echo
+        esac
