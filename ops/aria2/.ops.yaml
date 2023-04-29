@@ -1,0 +1,42 @@
+task:
+  aria2:
+    description: |
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task aria2 --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task aria2 --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task aria2 --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task aria2 --cmd=password
+
+      ## 安装
+
+      ## 参考链接
+
+      - ariang 镜像地址: <https://hub.docker.com/r/p3terx/ariang>
+      - aria2-pro 镜像地址: <https://hub.docker.com/r/p3terx/aria2-pro>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+#      SECRET_NAME: aria2-tls
+      app: aria2
+      chart: ops/aria2/helm
+      version: 0.2.0
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "aria2-pro" "202209060423"
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "ariang" "latest"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.aria2-password}" | base64 --decode; echo
+        esac

@@ -24,6 +24,7 @@ include:
   - ops/jaeger/.ops.yaml
   - ops/vscode/.ops.yaml
   - ops/jupyterhub/.ops.yaml
+  - ops/aria2/.ops.yaml
 
 dep:
   ops:
@@ -64,6 +65,7 @@ env:
     FLOOD_HOST: flood.${DOMAIN}
     WEBDAV_USERNAME: "{{.webdav.username}}"
     WEBDAV_PASSWORD: "{{.webdav.password}}"
+    ARIA_PASSWORD: "{{.aria.password}}"
     HELM_HOME: "${TMP}"
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"

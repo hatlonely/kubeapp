@@ -1,6 +1,6 @@
 apiVersion: v2
-name: qbittorrent-dashboard
-description: qbittorrent dashboard
+name: aria2
+description: aria2
 type: application
 version: 1.0.0
-appVersion: v1.3.2
+appVersion: v1.0.0
