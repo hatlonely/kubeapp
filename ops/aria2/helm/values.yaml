@@ -1,6 +1,6 @@
 image:
   pullSecret: test-pull-secret
-  aria2Pro:
+  aria2:
     repository: p3terx/aria2-pro
     tag: "202209060423"
   ariang:

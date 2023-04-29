@@ -1,6 +1,6 @@
 image:
   pullSecret: "${PULL_SECRET_NAME}"
-  aria2Pro:
+  aria2:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/aria2-pro
   ariang:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/ariang
