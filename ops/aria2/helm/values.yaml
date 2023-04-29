@@ -13,5 +13,5 @@ aria2:
 affinity: {}
 
 ingress:
-  rules: {}
-  tls: {}
+  host: "ariang.test.com"
+  tls: "test-tls"

@@ -5,12 +5,20 @@ metadata:
   name: ariang
 spec:
   ingressClassName: nginx
-  {{- with .Values.ingress.rules}}
   rules:
-    {{ toYaml . | nindent 4}}
-  {{- end}}
-  {{- with .Values.ingress.tls}}
+    - host: "{{.Values.ingress.host}}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: ariang
+                port:
+                  number: 80
+            path: /
+            pathType: ImplementationSpecific
+  {{- if .Values.ingress.tls}}
   tls:
-    {{ toYaml . | nindent 4}}
+    - secretName: {{.Values.ingress.tls}}
+      hosts:
+        - {{.Values.ingress.host}}
   {{- end}}
-

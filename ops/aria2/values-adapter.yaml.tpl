@@ -9,18 +9,9 @@ aria2:
   token: "${ARIA2_PASSWORD}"
 
 ingress:
-  enabled: true
   className: "nginx"
-  annotations: {}
-  hosts:
-    - host: "${ARIA2_HOST}"
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: "${TLS_SECRET}"
-      hosts:
-        - "${ARIA2_HOST}"
+  host: "${ARIA2_HOST}"
+  tls: "${TLS_SECRET}"
 
 affinity:
   nodeAffinity:
