@@ -25,6 +25,7 @@ include:
   - ops/vscode/.ops.yaml
   - ops/jupyterhub/.ops.yaml
   - ops/aria2/.ops.yaml
+  - ops/handle/.ops.yaml
 
 dep:
   ops:
