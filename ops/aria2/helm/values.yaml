@@ -13,5 +13,6 @@ aria2:
 affinity: {}
 
 ingress:
-  host: "ariang.test.com"
+  aria2Host: "aria2.test.com"
+  ariangHost: "ariang.test.com"
   tls: "test-tls"

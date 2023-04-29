@@ -11,7 +11,8 @@ aria2:
 
 ingress:
   className: "nginx"
-  host: "${ARIA2_HOST}"
+  aria2Host: "aria2.${DOMAIN}"
+  ariangHost: "ariang.${DOMAIN}"
   tls: "${TLS_SECRET}"
 
 affinity:
