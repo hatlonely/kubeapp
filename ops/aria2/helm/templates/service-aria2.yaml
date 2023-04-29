@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/name: aria2
 spec:
   type: ClusterIP
+  externalIPs:
+    - 192.168.0.191
   selector:
     app.kubernetes.io/instance: aria2
     app.kubernetes.io/name: aria2
@@ -17,6 +19,6 @@ spec:
       protocol: TCP
       targetPort: rpc
     - name: listen
-      port: 16889
+      port: 16882
       protocol: TCP
       targetPort: listen
