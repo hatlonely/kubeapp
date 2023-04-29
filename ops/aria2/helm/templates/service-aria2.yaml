@@ -19,6 +19,6 @@ spec:
       protocol: TCP
       targetPort: rpc
     - name: listen
-      port: 16882
+      port: 6888
       protocol: TCP
       targetPort: listen
