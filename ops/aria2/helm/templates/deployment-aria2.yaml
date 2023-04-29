@@ -17,6 +17,7 @@ spec:
         app.kubernetes.io/instance: aria2
         app.kubernetes.io/name: aria2
     spec:
+      dnsPolicy: Default
       {{- if .Values.image.pullSecret}}
       imagePullSecrets:
         - name: {{.Values.image.pullSecret}}

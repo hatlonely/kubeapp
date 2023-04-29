@@ -36,6 +36,7 @@ task:
         case "${cmd}" in
           "image")
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "aria2-pro" "202209060423"
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "aria2-pro" "latest"
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "ariang" "latest"
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;

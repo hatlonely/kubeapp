@@ -2,6 +2,7 @@ image:
   pullSecret: "${PULL_SECRET_NAME}"
   aria2:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/aria2-pro
+    tag: latest
   ariang:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/ariang
 
