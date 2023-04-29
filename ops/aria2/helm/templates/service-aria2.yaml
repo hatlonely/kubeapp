@@ -20,5 +20,5 @@ spec:
       targetPort: rpc
     - name: listen
       port: 6888
-      protocol: TCP
+      protocol: UDP
       targetPort: listen
