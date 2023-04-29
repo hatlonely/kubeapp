@@ -1,0 +1,30 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: {{.Release.Namespace}}
+  name: ariang
+  annotations:
+    app.kubernetes.io/instance: ariang
+    app.kubernetes.io/name: ariang
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: ariang
+      app.kubernetes.io/name: ariang
+  template:
+    spec:
+      {{- if .Values.image.pullSecret}}
+      imagePullSecrets:
+        - name: {{.Values.image.pullSecret}}
+      {{- end}}
+      containers:
+        - name: ariang
+          image: {{.Values.image.ariang.repository}}:{{.Values.image.ariang.tag}}
+          ports:
+            - containerPort: 6880
+              name: ariang
+              protocol: TCP
+      {{- with .Values.affinity}}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

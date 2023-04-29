@@ -1,0 +1,61 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: {{.Release.Namespace}}
+  name: aria2-pro
+  annotations:
+    app.kubernetes.io/instance: aria2-pro
+    app.kubernetes.io/name: aria2-pro
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: aria2-pro
+      app.kubernetes.io/name: aria2-pro
+  template:
+    spec:
+      {{- if .Values.image.pullSecret}}
+      imagePullSecrets:
+        - name: {{.Values.image.pullSecret}}
+      {{- end}}
+      restartPolicy: Always
+      containers:
+        - name: aria2-pro
+          image: {{.Values.image.aria2Pro.repository}}:{{.Values.image.aria2Pro.tag}}
+          ports:
+            - containerPort: 6800
+              name: rpc
+              protocol: TCP
+            - containerPort: 6888
+              name: listen
+              protocol: UDP
+          env:
+            - name: PUID
+              value: "500"
+            - name: PGID
+              value: "1000"
+            - name: UMASK_SET
+              value: "022"
+            - name: RPC_PORT
+              value: "6800"
+            - name: RPC_SECRET
+              value: "{{.Values.aria2.token}}"
+            - name: LISTEN_PORT
+              value: "6888"
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /downloads
+              name: downloads
+      volumes:
+        - name: config
+          nfs:
+            server: 192.168.0.101
+            path: /nfs/kubeapps/aria2
+        - name: downloads
+          nfs:
+            server: 192.168.0.101
+            path: /nfs/webdav/qbittorrent
+      {{- with .Values.affinity}}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
