@@ -24,7 +24,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: aria2
-          image: {{.Values.image.aria2Pro.repository}}:{{.Values.image.aria2Pro.tag}}
+          image: {{.Values.image.aria2.repository}}:{{.Values.image.aria2.tag}}
           ports:
             - containerPort: 6800
               name: rpc
