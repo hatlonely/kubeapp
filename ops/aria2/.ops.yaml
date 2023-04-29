@@ -10,10 +10,15 @@ task:
 
       ## 安装
 
+      设置：</#!/settings/rpc/set/${protocol}/${rpcHost}/${rpcPort}/${rpcInterface}/${secret}>
+
+      `curl https://aria2.hatlonely.com/#!/settings/rpc/set/http/aria2/6800/jsonrpc/xx`
+
       ## 参考链接
 
       - ariang 镜像地址: <https://hub.docker.com/r/p3terx/ariang>
       - aria2-pro 镜像地址: <https://hub.docker.com/r/p3terx/aria2-pro>
+      - ariang 配置: <http://ariang.mayswind.net/zh_Hans/command-api.html>
     args:
       cmd:
         type: string
