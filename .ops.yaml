@@ -65,7 +65,8 @@ env:
     FLOOD_HOST: flood.${DOMAIN}
     WEBDAV_USERNAME: "{{.webdav.username}}"
     WEBDAV_PASSWORD: "{{.webdav.password}}"
-    ARIA_PASSWORD: "{{.aria.password}}"
+    ARIA2_HOST: aria2.${DOMAIN}
+    ARIA2_PASSWORD: "{{.aria.password}}"
     HELM_HOME: "${TMP}"
     DNS_AK: "{{.dns.ak}}"
     DNS_SK: "{{.dns.sk}}"

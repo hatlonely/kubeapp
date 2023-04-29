@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{.Release.Namespace}}
+  name: ariang
+  labels:
+    app.kubernetes.io/instance: ariang
+    app.kubernetes.io/name: ariang
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/instance: ariang
+    app.kubernetes.io/name: ariang
+  ports:
+    - name: ariang
+      port: 80
+      protocol: TCP
+      targetPort: ariang

@@ -6,7 +6,21 @@ image:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/ariang
 
 aria2:
-  token: "${ARIA_PASSWORD}"
+  token: "${ARIA2_PASSWORD}"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: "${ARIA2_HOST}"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: "${TLS_SECRET}"
+      hosts:
+        - "${ARIA2_HOST}"
 
 affinity:
   nodeAffinity:

@@ -2,7 +2,7 @@ image:
   pullSecret: test-pull-secret
   aria2Pro:
     repository: p3terx/aria2-pro
-    tag: 202209060423
+    tag: "202209060423"
   ariang:
     repository: p3terx/ariang
     tag: latest
@@ -11,3 +11,7 @@ aria2:
   token: "test-token"
 
 affinity: {}
+
+ingress:
+  rules: {}
+  tls: {}
