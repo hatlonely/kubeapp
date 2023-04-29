@@ -10,7 +10,7 @@ task:
 
       ## 参考链接
 
-      - 仓库地址: <https://artifacthub.io/packages/helm/geek-cookbook/qflood>
+      - 仓库地址: <https://artifacthub.io/packages/helm/truecharts/qflood>
       - 配置项: <https://github.com/jesec/qflood/blob/v4.6.0/config.ts>
     args:
       cmd:
