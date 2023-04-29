@@ -12,6 +12,10 @@ spec:
       app.kubernetes.io/instance: aria2-pro
       app.kubernetes.io/name: aria2-pro
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: aria2-pro
+        app.kubernetes.io/name: aria2-pro
     spec:
       {{- if .Values.image.pullSecret}}
       imagePullSecrets:

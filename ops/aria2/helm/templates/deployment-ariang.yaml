@@ -12,6 +12,10 @@ spec:
       app.kubernetes.io/instance: ariang
       app.kubernetes.io/name: ariang
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: ariang
+        app.kubernetes.io/name: ariang
     spec:
       {{- if .Values.image.pullSecret}}
       imagePullSecrets:
