@@ -19,7 +19,7 @@ task:
       - ariang 镜像地址: <https://hub.docker.com/r/p3terx/ariang>
       - aria2-pro 镜像地址: <https://hub.docker.com/r/p3terx/aria2-pro>
       - ariang 配置: <http://ariang.mayswind.net/zh_Hans/command-api.html>
-      - aria-exporter 镜像地址: <https://github.com/sbruder/aria2_exporter>
+      - aria-exporter 仓库地址: <https://github.com/sbruder/aria2_exporter>
     args:
       cmd:
         type: string
