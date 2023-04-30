@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{.Release.Namespace}}
+  name: aria-exporter
+  labels:
+    app.kubernetes.io/instance: aria-exporter
+    app.kubernetes.io/name: aria-exporter
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: aria-exporter
+      app.kubernetes.io/name: aria-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: aria-exporter
+        app.kubernetes.io/name: aria-exporter
+    spec:
+      {{- if .Values.image.pullSecret}}
+      imagePullSecrets:
+        - name: {{.Values.image.pullSecret}}
+      {{- end}}
+      containers:
+        - name: aria-exporter
+          image: {{.Values.image.exporter.repository}}:{{.Values.image.exporter.tag}}
+          ports:
+            - containerPort: 9578
+              name: metrics
+              protocol: TCP
+          env:
+            - name: ARIA2_URL
+              value: http://aria2:6800
+            - name: ARIA2_RPC_SECRET
+              value: {{.Values.aria2.token}}
+      {{with .Values.affinity}}
+      affinity:
+        {{ toYaml . | nindent 8}}
+      {{- end}}

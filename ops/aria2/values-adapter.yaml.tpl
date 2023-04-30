@@ -5,6 +5,10 @@ image:
     tag: latest
   ariang:
     repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/ariang
+    tag: latest
+  exporter:
+    repository: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/aria2_exporter
+    tag: latest
 
 aria2:
   token: "${ARIA2_PASSWORD}"

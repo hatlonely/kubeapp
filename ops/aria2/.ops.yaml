@@ -19,6 +19,7 @@ task:
       - ariang 镜像地址: <https://hub.docker.com/r/p3terx/ariang>
       - aria2-pro 镜像地址: <https://hub.docker.com/r/p3terx/aria2-pro>
       - ariang 配置: <http://ariang.mayswind.net/zh_Hans/command-api.html>
+      - aria-exporter 镜像地址: <https://github.com/sbruder/aria2_exporter>
     args:
       cmd:
         type: string
@@ -38,6 +39,7 @@ task:
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "aria2-pro" "202209060423"
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "aria2-pro" "latest"
             sh ${DEP}/ops/tool/image.sh sync "docker.io" "p3terx" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "ariang" "latest"
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "sbruder" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "aria2_exporter" "latest"
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;

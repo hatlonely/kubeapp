@@ -6,6 +6,9 @@ image:
   ariang:
     repository: p3terx/ariang
     tag: latest
+  exporter:
+    repository: sbruder/aria2_exporter
+    tag: latest
 
 aria2:
   token: "test-token"
