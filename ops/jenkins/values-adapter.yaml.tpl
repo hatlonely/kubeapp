@@ -7,6 +7,6 @@ controller:
      kubernetes.io/ingress.class: nginx
     hostName: "jenkins.${DOMAIN}"
     tls:
-     - secretName: "${SECRET_NAME}"
+     - secretName: "${TLS_SECRET}"
        hosts:
          - "jenkins.${DOMAIN}"
