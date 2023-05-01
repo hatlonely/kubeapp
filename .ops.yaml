@@ -26,6 +26,7 @@ include:
   - ops/jupyterhub/.ops.yaml
   - ops/aria2/.ops.yaml
   - ops/handle/.ops.yaml
+  - ops/jenkins/.ops.yaml
 
 dep:
   ops:

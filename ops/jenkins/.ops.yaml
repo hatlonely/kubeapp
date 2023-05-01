@@ -30,7 +30,7 @@ task:
         esac
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
-          "repo") helm repo add jenkinsci https://charts.jenkins.io/;;
+          "repo") helm repo add jenkins https://charts.jenkins.io/;;
           "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
           "image")
             sh ${DEP}/ops/tool/image.sh sync "docker.elastic.co" "jenkins" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "jenkins" "${version}"
