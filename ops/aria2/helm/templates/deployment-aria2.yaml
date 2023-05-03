@@ -58,8 +58,8 @@ spec:
             path: /nfs/kubeapps/aria2
         - name: downloads
           nfs:
-            server: 192.168.0.101
-            path: /nfs/webdav/qbittorrent
+            server: 192.168.0.102
+            path: /nfs/share
       {{- with .Values.affinity}}
       affinity:
         {{- toYaml . | nindent 8 }}

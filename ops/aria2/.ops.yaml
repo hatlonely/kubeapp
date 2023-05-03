@@ -12,7 +12,7 @@ task:
 
       设置：</#!/settings/rpc/set/${protocol}/${rpcHost}/${rpcPort}/${rpcInterface}/${secret}>
 
-      `curl https://aria2.hatlonely.com/#!/settings/rpc/set/http/aria2/6800/jsonrpc/xx`
+      `curl https://ariang.hatlonely.com/#!/settings/rpc/set/https/aria2.hatlonely.com/443/jsonrpc/xx`
 
       ## 参考链接
 
