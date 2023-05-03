@@ -26,9 +26,9 @@ persistence:
   additionalVolumes:
     - name: downloads
       nfs:
-        server: 192.168.0.101
+        server: 192.168.0.102
         # 在 nfs 上执行命令变更目录归属 chown nobody:share -R .
-        path: /nfs/webdav/qbittorrent
+        path: /nfs/share
         readOnly: false
     - name: config
       nfs:
