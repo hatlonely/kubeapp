@@ -35,8 +35,8 @@ persistence:
     isPvc: false
     customVolume:
       nfs:
-        server: 192.168.0.101
-        path: /nfs/webdav/qbittorrent
+        server: 192.168.0.102
+        path: /nfs/share
         readOnly: false
 
 affinity:

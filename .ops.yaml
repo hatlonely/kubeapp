@@ -86,7 +86,8 @@ env:
     REGISTRY_USERNAME: "{{.registry.aliyun.username}}"
     REGISTRY_PASSWORD: "{{.registry.aliyun.password}}"
     REGISTRY_NAMESPACE: "{{.registry.aliyun.namespace}}"
-    HELM_HOME: "$HOME/k8s/helm"
+    # HELM_HOME: "$HOME/k8s/helm"
+    HELM_HOME: "$HOME/share/app/k8s/helm"
   ali:
     K8S_CONTEXT: kubernetes-admin@kubernetes
     NAMESPACE: hatlonely
