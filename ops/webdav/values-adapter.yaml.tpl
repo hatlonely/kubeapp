@@ -16,9 +16,6 @@ urls:
   /:
     - user: ${WEBDAV_USERNAME}
       password: ${WEBDAV_PASSWORD}
-  /qbittorrent:
-    - user: qbittorrent
-      password: ${QBITTORRENT_PASSWORD}
   /hatlonely:
     - user: hatlonely
       password: ${HATLONELY_PASSWORD}
@@ -33,8 +30,8 @@ persistence:
   enabled: true
   type: nfs
   nfs:
-    server: 192.168.0.101
-    path: /nfs/webdav
+    server: 192.168.0.102
+    path: /nfs/share
     readOnly: false
 
 affinity:
