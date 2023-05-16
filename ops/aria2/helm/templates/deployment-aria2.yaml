@@ -51,6 +51,8 @@ spec:
               name: config
             - mountPath: /downloads
               name: downloads
+            - mountPath: /opt/alist/data/temp/aria2
+              name: downloads
       volumes:
         - name: config
           nfs:
