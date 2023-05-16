@@ -27,6 +27,7 @@ include:
   - ops/aria2/.ops.yaml
   - ops/handle/.ops.yaml
   - ops/jenkins/.ops.yaml
+  - ops/alist/.ops.yaml
 
 dep:
   ops:

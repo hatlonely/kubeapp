@@ -1,0 +1,47 @@
+task:
+  alist:
+    description: |
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task alist --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task alist --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task alist --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task alist --cmd=password
+
+      ## 安装
+
+      设置：</#!/settings/rpc/set/${protocol}/${rpcHost}/${rpcPort}/${rpcInterface}/${secret}>
+
+      `curl https://ariang.hatlonely.com/#!/settings/rpc/set/https/alist.hatlonely.com/443/jsonrpc/xx`
+
+      ## 参考链接
+
+      - ariang 镜像地址: <https://hub.docker.com/r/p3terx/ariang>
+      - alist-pro 镜像地址: <https://hub.docker.com/r/p3terx/alist-pro>
+      - ariang 配置: <http://ariang.mayswind.net/zh_Hans/command-api.html>
+      - aria-exporter 仓库地址: <https://github.com/sbruder/alist_exporter>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+#      SECRET_NAME: alist-tls
+      app: alist
+      chart: ops/alist/helm
+      version: 0.2.0
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "xhofe" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "alist" "v3.17.0"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace "${NAMESPACE}" "${app}" -o jsonpath="{.data.alist-password}" | base64 --decode; echo
+        esac

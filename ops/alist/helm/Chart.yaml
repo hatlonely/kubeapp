@@ -1,6 +1,6 @@
 apiVersion: v2
-name: aria2
-description: aria2
+name: alist
+description: alist
 type: application
 version: 1.0.0
 appVersion: v1.0.0

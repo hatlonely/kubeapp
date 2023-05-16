@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{.Release.Namespace}}
+  name: alist
+  labels:
+    app.kubernetes.io/instance: alist
+    app.kubernetes.io/name: alist
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: alist
+      app.kubernetes.io/name: alist
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: alist
+        app.kubernetes.io/name: alist
+    spec:
+      {{- if .Values.image.pullSecret}}
+      imagePullSecrets:
+        - name: {{.Values.image.pullSecret}}
+      {{- end}}
+      containers:
+        - name: alist
+          image: {{.Values.image.repository}}:{{.Values.image.tag}}
+          ports:
+            - containerPort: 5244
+              name: alist
+              protocol: TCP
+          env:
+            - name: KEY
+              value: value
+      {{with .Values.affinity}}
+      affinity:
+        {{ toYaml . | nindent 8}}
+      {{- end}}

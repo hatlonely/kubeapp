@@ -23,6 +23,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task minio --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task etcd-operator --cmd=image
 ops --variable .cfg/dev.yaml -a run --env dev --task cert-manager --cmd=image
+ops --variable .cfg/dev.yaml -a run --env dev --task alist --cmd=image
 
 ops --variable .cfg/dev.yaml -a run --env dev --task nginx-ingress-controller --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kubernetes-dashboard --cmd=install

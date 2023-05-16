@@ -1,0 +1,10 @@
+image:
+  pullSecret: test-pull-secret
+  repository: xhofe/alist
+  tag: v3.17.0
+
+affinity: {}
+
+ingress:
+  host: "alist.test.com"
+  tls: "test-tls"
