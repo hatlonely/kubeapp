@@ -36,7 +36,7 @@ spec:
               name: etc
             - mountPath: /opt/alist/data
               name: data
-      volumes:op
+      volumes:
         - name: etc
           nfs:
             server: 192.168.0.101
