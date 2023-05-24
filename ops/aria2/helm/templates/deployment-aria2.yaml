@@ -52,7 +52,7 @@ spec:
             - mountPath: /downloads
               name: downloads
             - mountPath: /opt/alist/data/temp/aria2
-              name: downloads
+              name: alist
       volumes:
         - name: config
           nfs:
@@ -62,6 +62,10 @@ spec:
           nfs:
             server: 192.168.0.102
             path: /nfs/share
+        - name: alist
+          nfs:
+            server: 192.168.0.102
+            path: /nfs/share/alist
       {{- with .Values.affinity}}
       affinity:
         {{- toYaml . | nindent 8 }}
