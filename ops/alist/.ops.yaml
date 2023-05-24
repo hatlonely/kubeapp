@@ -10,12 +10,14 @@ task:
 
       ## 安装
 
-      获取密码：标准输出中有打印，进入容器中执行 `./alist admin` 也可以获取
+      1. 获取密码：标准输出中有打印，进入容器中执行 `./alist admin` 也可以获取
+      2. alist aria2 配置：底部链接**管理** -> 左侧导航**设置** -> **其他**
 
       ## 参考链接
 
       - alist 镜像地址: <https://hub.docker.com/r/xhofe/alist>
       - alist 中文官网: <https://alist.nn.ci/zh/guide/install/script.html>
+      - alist 阿里云盘配置: <https://alist.nn.ci/zh/guide/drivers/aliyundrive_open.html>
     args:
       cmd:
         type: string
