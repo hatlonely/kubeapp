@@ -31,6 +31,20 @@ spec:
           env:
             - name: KEY
               value: value
+          volumeMounts:
+            - mountPath: /etc/alist
+              name: etc
+            - mountPath: /opt/alist/data
+              name: data
+      volumes:op
+        - name: etc
+          nfs:
+            server: 192.168.0.101
+            path: /nfs/kubeapps/alist/etc
+        - name: data
+          nfs:
+            server: 192.168.0.101
+            path: /nfs/kubeapps/alist/data
       {{with .Values.affinity}}
       affinity:
         {{ toYaml . | nindent 8}}

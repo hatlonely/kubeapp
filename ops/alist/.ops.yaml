@@ -10,16 +10,12 @@ task:
 
       ## 安装
 
-      设置：</#!/settings/rpc/set/${protocol}/${rpcHost}/${rpcPort}/${rpcInterface}/${secret}>
-
-      `curl https://ariang.hatlonely.com/#!/settings/rpc/set/https/alist.hatlonely.com/443/jsonrpc/xx`
+      获取密码：标准输出中有打印，进入容器中执行 `./alist admin` 也可以获取
 
       ## 参考链接
 
-      - ariang 镜像地址: <https://hub.docker.com/r/p3terx/ariang>
-      - alist-pro 镜像地址: <https://hub.docker.com/r/p3terx/alist-pro>
-      - ariang 配置: <http://ariang.mayswind.net/zh_Hans/command-api.html>
-      - aria-exporter 仓库地址: <https://github.com/sbruder/alist_exporter>
+      - alist 镜像地址: <https://hub.docker.com/r/xhofe/alist>
+      - alist 中文官网: <https://alist.nn.ci/zh/guide/install/script.html>
     args:
       cmd:
         type: string
