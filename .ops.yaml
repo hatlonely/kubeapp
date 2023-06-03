@@ -28,6 +28,7 @@ include:
   - ops/handle/.ops.yaml
   - ops/jenkins/.ops.yaml
   - ops/alist/.ops.yaml
+  - ops/csi-driver-smb/.ops.yaml
 
 dep:
   ops:
@@ -209,6 +210,7 @@ task:
       - helm repo add k8s-webdav https://danuk.github.io/k8s-webdav/
       - helm repo add kubegemsapp https://charts.kubegems.io/kubegemsapp
       - helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
+      - helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
       - helm repo update
   redis-cluster:
     description: https://github.com/bitnami/charts/tree/master/bitnami/redis-cluster

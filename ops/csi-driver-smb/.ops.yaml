@@ -1,0 +1,51 @@
+task:
+  csi-driver-smb:
+    description: |      
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task csi-driver-smb --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task csi-driver-smb --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task csi-driver-smb --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task csi-driver-smb --cmd=password
+      
+      ## 参考链接
+
+      - 项目地址地址: <https://github.com/kubernetes-csi/csi-driver-smb/tree/master>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["addrepo", "pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+      SECRET_NAME: csi-driver-smb-tls
+      app: csi-driver-smb
+      chart: csi-driver-smb/csi-driver-smb
+      version: v1.11.0
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "pull") 
+            wget https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts/v1.11.0/csi-driver-smb-v1.11.0.tgz -O csi-driver-smb-v1.11.0.tgz && \
+            mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
+        esac
+        chart=${HELM_HOME}/${app}/${app}-${version}.tgz
+        case "${cmd}" in
+          "addrepo")
+            helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+            ;;
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "registry.k8s.io" "sig-storage" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "csi-provisioner" "v3.5.0"
+            sh ${DEP}/ops/tool/image.sh sync "registry.k8s.io" "sig-storage" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "livenessprobe" "v2.10.0"
+            sh ${DEP}/ops/tool/image.sh sync "registry.k8s.io" "sig-storage" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "smbplugin" "v1.11.0"
+            sh ${DEP}/ops/tool/image.sh sync "registry.k8s.io" "sig-storage" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "csi-node-driver-registrar" "v2.8.0"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "password") kubectl get secret --namespace dev csi-driver-smb -o jsonpath="{.data.csi-driver-smb-password}" | base64 --decode; echo
+        esac
+
