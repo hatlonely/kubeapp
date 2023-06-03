@@ -17,6 +17,7 @@ task:
         default: diff
         validation: x in ["addrepo", "pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
     const:
+      NAMESPACE: kube-system
       SECRET_NAME: csi-driver-smb-tls
       app: csi-driver-smb
       chart: csi-driver-smb/csi-driver-smb
