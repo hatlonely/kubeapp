@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: smb-nas3-qbittorrent
+  name: smb-nas3-aria2
 spec:
   accessModes:
     - ReadWriteMany
@@ -9,4 +9,4 @@ spec:
     requests:
       storage: 100Gi
   storageClassName: sc-smb-nas3
-  volumeName: smb-nas3-qbittorrent
+  volumeName: smb-nas3-aria2

@@ -30,7 +30,7 @@ spec:
       volumes:
         - name: nas3
           persistentVolumeClaim:
-            claimName: pv-smb-nas3-qbitorrent
+            claimName: smb-nas3-qbittorrent
           {{- if .Values.persistence.additionalVolumes }}
             {{- .Values.persistence.additionalVolumes | toYaml | nindent 8}}
           {{- end }}

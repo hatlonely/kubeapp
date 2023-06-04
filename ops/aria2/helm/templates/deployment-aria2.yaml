@@ -61,7 +61,7 @@ spec:
             path: /nfs/kubeapps/aria2
         - name: nas3
           persistentVolumeClaim:
-            claimName: pvc-smb-nas3
+            claimName: smb-nas3-aria2
       {{- with .Values.affinity}}
       affinity:
         {{- toYaml . | nindent 8 }}
