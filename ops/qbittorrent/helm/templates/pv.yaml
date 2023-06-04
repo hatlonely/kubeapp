@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   annotations:
     pv.kubernetes.io/provisioned-by: smb.csi.k8s.io
-  name: pv-smb-nas3
+  name: pv-smb-nas3-qbitorrent
 spec:
   capacity:
     storage: 45Ti
@@ -23,7 +23,7 @@ spec:
   csi:
     driver: smb.csi.k8s.io
     readOnly: false
-    volumeHandle: 192.168.0.103#hatlonely_nas3/share#nas3_share
+    volumeHandle: 192.168.0.103#hatlonely_nas3/share#nas3_share_qbittorrent
     volumeAttributes:
       source: "//192.168.0.103/hatlonely_nas3/share"
     nodeStageSecretRef:
