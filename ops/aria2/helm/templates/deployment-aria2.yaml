@@ -50,24 +50,15 @@ spec:
             - mountPath: /config
               name: config
             - mountPath: /downloads
-              name: downloads
-            - mountPath: /nas3
               name: nas3
             - mountPath: /opt/alist/data/temp/aria2
-              name: alist
+              name: nas3
+              subPath: alist
       volumes:
         - name: config
           nfs:
             server: 192.168.0.101
             path: /nfs/kubeapps/aria2
-        - name: downloads
-          nfs:
-            server: 192.168.0.102
-            path: /nfs/share
-        - name: alist
-          nfs:
-            server: 192.168.0.102
-            path: /nfs/share/alist
         - name: nas3
           persistentVolumeClaim:
             claimName: pvc-smb-nas3

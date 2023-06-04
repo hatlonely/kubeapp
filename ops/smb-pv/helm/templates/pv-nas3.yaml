@@ -10,7 +10,7 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: smb
+  storageClassName: sc-smb-nas3
   mountOptions:
     - dir_mode=0777
     - file_mode=0777
@@ -25,9 +25,9 @@ spec:
     readOnly: false
     # volumeHandle format: {smb-server-address}#{sub-dir-name}#{share-name}
     # make sure this value is unique for every share in the cluster
-    volumeHandle: 192.168.0.103#hatlonely_nas3/share#test100G
+    volumeHandle: 192.168.0.103#hatlonely_nas3/share#nas3_share
     volumeAttributes:
-      source: "//192.168.0.103/hatlonely_nas3/share/test100G"
+      source: "//192.168.0.103/hatlonely_nas3/share"
     nodeStageSecretRef:
       name: smbcreds
       namespace: {{ .Release.Namespace }}
