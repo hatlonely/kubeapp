@@ -51,6 +51,8 @@ spec:
               name: config
             - mountPath: /downloads
               name: downloads
+            - mountPath: /nas3
+              name: nas3
             - mountPath: /opt/alist/data/temp/aria2
               name: alist
       volumes:
@@ -66,6 +68,9 @@ spec:
           nfs:
             server: 192.168.0.102
             path: /nfs/share/alist
+        - name: nas3
+          persistentVolumeClaim:
+            claimName: pvc-smb-nas3
       {{- with .Values.affinity}}
       affinity:
         {{- toYaml . | nindent 8 }}

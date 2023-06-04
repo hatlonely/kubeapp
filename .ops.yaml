@@ -29,6 +29,7 @@ include:
   - ops/jenkins/.ops.yaml
   - ops/alist/.ops.yaml
   - ops/csi-driver-smb/.ops.yaml
+  - ops/smb-pv/.ops.yaml
 
 dep:
   ops:

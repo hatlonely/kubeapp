@@ -1,0 +1,48 @@
+env:
+  dev:
+    SMB_USERNAME: "{{ .smb.username }}"
+    SMB_PASSWORD: "{{ .smb.password }}"
+
+task:
+  smb-pv:
+    description: |
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task smb-pv --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task smb-pv --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task smb-pv --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task smb-pv --cmd=password
+
+      ## 参考链接
+
+      - smb-pv 镜像地址: <https://hub.docker.com/r/xhofe/smb-pv>
+      - smb-pv 中文官网: <https://smb-pv.nn.ci/zh/guide/install/script.html>
+      - smb-pv 阿里云盘配置: <https://smb-pv.nn.ci/zh/guide/drivers/aliyundrive_open.html>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status", "password"]
+    const:
+      app: smb-pv
+      chart: ops/smb-pv/helm
+      version: v1.0.0
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install")
+            kubectl get secret "smbcreds" -n "${NAMESPACE}" 2>/dev/null 1>&2 || { \
+              kubectl create secret generic smbcreds \
+                --from-literal username=${SMB_USERNAME} \
+                --from-literal password=${SMB_PASSWORD} \
+                --namespace=${NAMESPACE}
+            }
+            helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version}
+            ;;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+        esac

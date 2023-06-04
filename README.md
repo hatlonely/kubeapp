@@ -43,6 +43,7 @@ ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task minio --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task cert-manager --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task csi-driver-smb --cmd=pull
+ops --variable .cfg/dev.yaml -a run --env dev --task smb-pv --cmd=pull
 ```
 
 # 命令
