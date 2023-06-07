@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nav
+  labels:
+    app: nav
+spec:
+  selector:
+    matchLabels:
+      app: nav
+  template:
+    metadata:
+      labels:
+        app: nav
+    spec:
+      {{if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      {{end}}
+      containers:
+        - name: nav
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+      {{with .Values.affinity}}
+      affinity:
+        {{toYaml . | indent 8}}
+      {{end}}
+      {{with .Values.nodeSelector}}
+      nodeSelector:
+          {{toYaml . | indent 8}}
+      {{end}}
+      {{with .Values.tolerations}}
+      tolerations:
+          {{toYaml . | indent 8}}
+      {{end}}
+      {{with .Values.resources}}
+      resources:
+          {{toYaml . | indent 8}}
+      {{end}}

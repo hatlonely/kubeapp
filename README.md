@@ -42,8 +42,9 @@ ops --variable .cfg/dev.yaml -a run --env dev --task etcd-cluster --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task kubeapps --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task minio --cmd=install
 ops --variable .cfg/dev.yaml -a run --env dev --task cert-manager --cmd=install
-ops --variable .cfg/dev.yaml -a run --env dev --task csi-driver-smb --cmd=pull
-ops --variable .cfg/dev.yaml -a run --env dev --task smb-pv --cmd=pull
+ops --variable .cfg/dev.yaml -a run --env dev --task csi-driver-smb --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task smb-pv --cmd=install
+ops --variable .cfg/dev.yaml -a run --env dev --task nav --cmd=install
 ```
 
 # 命令

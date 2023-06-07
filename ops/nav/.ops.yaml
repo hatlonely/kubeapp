@@ -1,0 +1,42 @@
+task:
+  nav:
+    description: |
+      ## ops 命令
+
+      ops --variable .cfg/dev.yaml -a run --env dev --task nav --cmd=pull
+      ops --variable .cfg/dev.yaml -a run --env dev --task nav --cmd=image
+      ops --variable .cfg/dev.yaml -a run --env dev --task nav --cmd=install
+      ops --variable .cfg/dev.yaml -a run --env dev --task nav --cmd=password
+
+      ## 安装
+
+      1. 获取密码：标准输出中有打印，进入容器中执行 `./nav admin` 也可以获取
+      2. nav aria2 配置：底部链接**管理** -> 左侧导航**设置** -> **其他**
+
+      ## 参考链接
+
+      - nav 代码地址: <https://github.com/xjh22222228/nav>
+    args:
+      cmd:
+        type: string
+        default: diff
+        validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status"]
+    const:
+#      SECRET_NAME: nav-tls
+      app: nav
+      chart: ops/nav/helm
+      version: 1.0.0
+    step:
+      - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
+      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - |
+        case "${cmd}" in
+          "image")
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "xhofe" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nav" "v3.17.0"
+            ;;
+          "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
+          "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
+          "status") helm status -n "${NAMESPACE}" "${app}";;
+          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+        esac

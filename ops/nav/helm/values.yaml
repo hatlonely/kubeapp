@@ -1,0 +1,11 @@
+image:
+  pullSecret: test-pull-secret
+  pullPolicy: IfNotPresent
+  repository: hatlonely/nav
+  tag: v1.0.0
+
+affinity: {}
+
+ingress:
+  host: "nav.test.com"
+  tls: "test-tls"
