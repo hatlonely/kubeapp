@@ -22,17 +22,19 @@ task:
         default: diff
         validation: x in ["pull", "diff", "image", "install", "delete", "upgrade", "status"]
     const:
-#      SECRET_NAME: nav-tls
+      #      SECRET_NAME: nav-tls
       app: nav
       chart: ops/nav/helm
-      version: 1.0.0
+      version: v1.0.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "xhofe" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "nav" "v3.17.0"
+            docker build -t ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/nav:${version} ops/nav/docker -f ops/nav/docker/Dockerfile
+            docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_ENDPOINT}
+            docker push ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/nav:${version}
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
