@@ -3,3 +3,4 @@ tmp/
 .idea/
 *.bk
 .vscode/
+.docker/
