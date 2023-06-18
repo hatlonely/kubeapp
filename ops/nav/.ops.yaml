@@ -8,11 +8,6 @@ task:
       ops --variable .cfg/dev.yaml -a run --env dev --task nav --cmd=install
       ops --variable .cfg/dev.yaml -a run --env dev --task nav --cmd=password
 
-      ## 安装
-
-      1. 获取密码：标准输出中有打印，进入容器中执行 `./nav admin` 也可以获取
-      2. nav aria2 配置：底部链接**管理** -> 左侧导航**设置** -> **其他**
-
       ## 参考链接
 
       - nav 代码地址: <https://github.com/xjh22222228/nav>
@@ -24,15 +19,16 @@ task:
     const:
       #      SECRET_NAME: nav-tls
       app: nav
-      chart: ops/nav/helm
+      chart: helm
       version: v1.0.0
     step:
+      - env
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - sh ${DEP}/ops/tool/render.sh . ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")
-            docker build -t ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/nav:${version} ops/nav/docker -f ops/nav/docker/Dockerfile
+            docker build -t ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/nav:${version} docker -f docker/Dockerfile
             docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_ENDPOINT}
             docker push ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/nav:${version}
             ;;
