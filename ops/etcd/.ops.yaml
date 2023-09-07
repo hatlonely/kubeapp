@@ -22,11 +22,14 @@ task:
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "image")
-            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "etcd" 3.5.4-debian-11-r8
+            sh ${DEP}/ops/tool/image.sh sync "docker.io" "bitnami" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "etcd" 3.5.9-debian-11-r100
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install") helm install -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
-          "delete") helm delete -n "${NAMESPACE}" "${app}";;
+          "delete") 
+            helm delete -n "${NAMESPACE}" "${app}"
+            kubectl get pvc -n "${NAMESPACE}" | grep data-etcd- | awk '{print $1}' | xargs kubectl delete pvc -n "${NAMESPACE}" 
+            ;;
         esac
