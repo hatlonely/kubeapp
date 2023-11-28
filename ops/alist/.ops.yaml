@@ -30,7 +30,7 @@ task:
       version: 0.2.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - sh ${DEP}/devops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")

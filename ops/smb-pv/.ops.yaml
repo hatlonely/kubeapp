@@ -29,7 +29,7 @@ task:
       version: v1.0.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - sh ${DEP}/devops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;

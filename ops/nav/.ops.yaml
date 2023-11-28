@@ -23,7 +23,7 @@ task:
       version: v1.0.0
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh values-adapter.yaml.tpl ${TMP}/${app}/values-adapter.yaml
+      - sh ${DEP}/devops/tool/render.sh values-adapter.yaml.tpl ${TMP}/${app}/values-adapter.yaml
       - |
         case "${cmd}" in
           "image")

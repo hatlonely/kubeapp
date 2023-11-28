@@ -92,7 +92,7 @@ env:
     REGISTRY_PASSWORD: "{{.registry.aliyun.password}}"
     REGISTRY_NAMESPACE: "{{.registry.aliyun.namespace}}"
     # HELM_HOME: "$HOME/k8s/helm"
-    HELM_HOME: "$HOME/share/app/k8s/helm"
+    HELM_HOME: "/home/hatlonely/share/app/k8s/helm"
   ali:
     K8S_CONTEXT: weboffice-regression-cn-hangzhou
     NAMESPACE: hatlonely
@@ -228,7 +228,7 @@ task:
       version: 6.2.4
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - sh ${DEP}/devops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
@@ -254,7 +254,7 @@ task:
       version: 0.11.2
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - sh ${DEP}/devops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "image")
@@ -277,7 +277,7 @@ task:
       app: etcd-cluster
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/ops/tool/render.sh ops/${app} ${TMP}/${app}
+      - sh ${DEP}/devops/tool/render.sh ops/${app} ${TMP}/${app}
       - |
         case "${cmd}" in
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${TMP}/${app}/helm" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
