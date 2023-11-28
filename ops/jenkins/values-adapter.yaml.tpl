@@ -1,5 +1,8 @@
 
 controller:
+  imagePullSecretName: ${PULL_SECRET_NAME}
+  image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jenkins"
+  tagLabel: 2.426.1-jdk11
   ingress:
     enabled: true
     apiVersion: "networking.k8s.io/v1"
@@ -13,3 +16,5 @@ controller:
   sidecars:
     configAutoReload:
       image: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/k8s-sidecar:1.24.4
+agent:
+  imagePullSecretName: ${PULL_SECRET_NAME}
