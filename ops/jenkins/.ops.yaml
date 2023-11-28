@@ -17,13 +17,14 @@ task:
         default: diff
         validation: x in ["pull", "diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
     const:
-#      SECRET_NAME: jenkins-tls
+      #      SECRET_NAME: jenkins-tls
       app: jenkins
       chart: jenkins/jenkins
-      version: 4.3.22
+      version: 4.9.1
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/devops/tool/render.sh ops/${app} ${TMP}/${app}
+      - echo $TMP
+      - sh ${DEP}/devops/tool/render.sh values-adapter.yaml.tpl ${TMP}/${app}/values-adapter.yaml
       - |
         case "${cmd}" in
           "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
@@ -31,7 +32,6 @@ task:
         chart=${HELM_HOME}/${app}/${app}-${version}.tgz
         case "${cmd}" in
           "repo") helm repo add jenkins https://charts.jenkins.io/;;
-          "values") curl https://raw.githubusercontent.com/elastic/helm-charts/v${version}/${app}/values.yaml -o ops/${app}/values.yaml;;
           "image")
             sh ${DEP}/ops/tool/image.sh sync "docker.elastic.co" "jenkins" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "jenkins" "${version}"
             ;;
