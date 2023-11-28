@@ -262,7 +262,6 @@ args: []
 ## @section etcd statefulset parameters
 ##
 
-
 ## @param replicaCount Number of etcd replicas to deploy
 ##
 replicaCount: 1
@@ -791,18 +790,17 @@ metrics:
     ##
     additionalLabels: {}
     ## @param metrics.prometheusRule.rules Prometheus Rule definitions
-      # - alert: ETCD has no leader
-      #   annotations:
-      #     summary: "ETCD has no leader"
-      #     description: "pod {{`{{`}} $labels.pod {{`}}`}} state error, can't connect leader"
-      #   for: 1m
-      #   expr: etcd_server_has_leader == 0
-      #   labels:
-      #     severity: critical
-      #     group: PaaS
+    # - alert: ETCD has no leader
+    #   annotations:
+    #     summary: "ETCD has no leader"
+    #     description: "pod {{`{{`}} $labels.pod {{`}}`}} state error, can't connect leader"
+    #   for: 1m
+    #   expr: etcd_server_has_leader == 0
+    #   labels:
+    #     severity: critical
+    #     group: PaaS
     ##
     rules: []
-
 
 ## @section Snapshotting parameters
 ##
