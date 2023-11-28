@@ -10,3 +10,6 @@ controller:
      - secretName: "${TLS_SECRET}"
        hosts:
          - "jenkins.${DOMAIN}"
+  sidecars:
+    configAutoReload:
+      image: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/k8s-sidecar:1.24.4
