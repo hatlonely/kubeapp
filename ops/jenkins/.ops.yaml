@@ -20,7 +20,7 @@ task:
       #      SECRET_NAME: jenkins-tls
       app: jenkins
       chart: jenkins/jenkins
-      version: 4.8.6
+      version: 4.9.1
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - sh ${DEP}/devops/tool/render.sh values-adapter.yaml.tpl ${TMP}/${app}/values-adapter.yaml
@@ -33,7 +33,7 @@ task:
           "repo") helm repo add jenkins https://charts.jenkins.io/;;
           "image")
             sh ${DEP}/devops/tool/image.sh sync "docker.io" "kiwigrid" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "k8s-sidecar" "1.24.4"
-            sh ${DEP}/devops/tool/image.sh sync "docker.io" "jenkins" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "jenkins" "2.426.1-jdk11"
+            sh ${DEP}/devops/tool/image.sh sync "docker.io" "jenkins" "" "" "${REGISTRY_ENDPOINT}" "${REGISTRY_NAMESPACE}" "${REGISTRY_USERNAME}" "${REGISTRY_PASSWORD}" "jenkins" "2.426.1-jdk17"
             ;;
           "diff") helm diff upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --allow-unreleased --version=${version};;
           "install")
