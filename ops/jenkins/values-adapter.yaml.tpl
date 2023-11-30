@@ -12,6 +12,13 @@ controller:
      - secretName: "${TLS_SECRET}"
        hosts:
          - "jenkins.${DOMAIN}"
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "4000m"
+      memory: "8192Mi"
   sidecars:
     configAutoReload:
       image: ${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/k8s-sidecar:1.24.4
