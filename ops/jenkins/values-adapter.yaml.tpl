@@ -20,11 +20,11 @@ controller:
      kubernetes.io/ingress.class: nginx
     paths:
     - "/"
-    hostName: "report.${DOMAIN}"
+    hostName: "jenkins-static.${DOMAIN}"
     tls:
      - secretName: "${TLS_SECRET}"
        hosts:
-         - "report.${DOMAIN}"
+         - "jenkins-static.${DOMAIN}"
   resources:
     requests:
       cpu: "50m"
