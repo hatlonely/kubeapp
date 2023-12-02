@@ -2,11 +2,12 @@
 controller:
   imagePullSecretName: ${PULL_SECRET_NAME}
   image: "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/jenkins"
+  tag: "2.434-jdk17"
   ingress:
     enabled: true
     apiVersion: "networking.k8s.io/v1"
     annotations:
-     kubernetes.io/ingress.class: ngin
+     kubernetes.io/ingress.class: nginx
     hostName: "jenkins.${DOMAIN}"
     tls:
      - secretName: "${TLS_SECRET}"
