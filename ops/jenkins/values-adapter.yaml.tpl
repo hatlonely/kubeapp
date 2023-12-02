@@ -19,7 +19,7 @@ controller:
     annotations:
      kubernetes.io/ingress.class: nginx
     paths:
-    - "/report"
+    - "/"
     hostName: "report.${DOMAIN}"
     tls:
      - secretName: "${TLS_SECRET}"
