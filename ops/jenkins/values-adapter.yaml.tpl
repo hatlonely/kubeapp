@@ -6,12 +6,24 @@ controller:
     enabled: true
     apiVersion: "networking.k8s.io/v1"
     annotations:
-     kubernetes.io/ingress.class: nginx
+     kubernetes.io/ingress.class: ngin
     hostName: "jenkins.${DOMAIN}"
     tls:
      - secretName: "${TLS_SECRET}"
        hosts:
          - "jenkins.${DOMAIN}"
+  secondaryingress:
+    enabled: true
+    apiVersion: "networking.k8s.io/v1"
+    annotations:
+     kubernetes.io/ingress.class: nginx
+    paths:
+    - "/report"
+    hostName: "report.${DOMAIN}"
+    tls:
+     - secretName: "${TLS_SECRET}"
+       hosts:
+         - "report.${DOMAIN}"
   resources:
     requests:
       cpu: "50m"
