@@ -85,6 +85,7 @@ env:
     VARIABLE_SECRET_FILE: ".cfg/dev.yaml"
     KUBECONFIG_SECRET_NAME: "kubeconfig-secret"
     KUBECONFIG_SECRET_FILE: "/home/hatlonely/.kube/config"
+    DOCKER_SECRET_NAME: "docker-secret"
   dev:
     K8S_CONTEXT: kubernetes-admin@kubernetes
     NAMESPACE: dev
@@ -138,7 +139,7 @@ task:
       - kubectl taint nodes hatlonely-vc66-0 "node-role.kubernetes.io/control-plane=:NoSchedule-"
       - kubectl taint nodes hatlonely-vc66-1 "node-role.kubernetes.io/control-plane=:NoSchedule-"
       - kubectl taint nodes hatlonely-vc66-2 "node-role.kubernetes.io/control-plane=:NoSchedule-"
-  variable:
+  variable-secret:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - |
@@ -152,7 +153,7 @@ task:
           kubectl create secret generic ${VARIABLE_SECRET_NAME} -n ${NAMESPACE} \
             --from-file=variable.yaml=${VARIABLE_SECRET_FILE}
         }
-  kubeconfig:
+  kubeconfig-secret:
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
       - |
@@ -165,6 +166,29 @@ task:
         } || {
           kubectl create secret generic ${KUBECONFIG_SECRET_NAME} -n ${NAMESPACE} \
             --from-file=config=${KUBECONFIG_SECRET_FILE}
+        }
+  docker-secret:
+    step:
+      - |
+        kubectl get secret ${DOCKER_SECRET_NAME} -n ${NAMESPACE} >/dev/null 2>&1 && {
+          kubectl create secret generic ${DOCKER_SECRET_NAME} -n ${NAMESPACE} \
+            --save-config \
+            --dry-run=client \
+            --from-literal=REGISTRY_ENDPOINT=${REGISTRY_ENDPOINT} \
+            --from-literal=REGISTRY_NAMESPACE=${REGISTRY_NAMESPACE} \
+            --from-literal=REGISTRY_USERNAME=${REGISTRY_USERNAME} \
+            --from-literal=REGISTRY_PASSWORD=${REGISTRY_PASSWORD} \
+            --from-literal=GIT_USERNAME=${GIT_USERNAME} \
+            --from-literal=GIT_PASSWORD=${GIT_PASSWORD} \
+            -o yaml | kubectl apply -f -
+        } || {
+          kubectl create secret generic ${DOCKER_SECRET_NAME} -n ${NAMESPACE} \
+            --from-literal=REGISTRY_ENDPOINT=${REGISTRY_ENDPOINT} \
+            --from-literal=REGISTRY_NAMESPACE=${REGISTRY_NAMESPACE} \
+            --from-literal=REGISTRY_USERNAME=${REGISTRY_USERNAME} \
+            --from-literal=REGISTRY_PASSWORD=${REGISTRY_PASSWORD} \
+            --from-literal=GIT_USERNAME=${GIT_USERNAME} \
+            --from-literal=GIT_PASSWORD=${GIT_PASSWORD}
         }
   namespace:
     step:
