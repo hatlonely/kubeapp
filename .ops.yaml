@@ -41,6 +41,8 @@ dep:
 
 env:
   default:
+    # HTTP_PROXY: 172.25.144.1:7080
+    # HTTPS_PROXY: 172.25.144.1:7080
     TLS_KEY: '{{.tls.key | replace "\n" "@"}}'
     TLS_CRT: '{{.tls.crt | replace "\n" "@"}}'
     MONGO_PASSWORD: "{{.mongo.rootPassword}}"

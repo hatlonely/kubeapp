@@ -9,7 +9,7 @@ imagePullSecrets:
   - name: "${PULL_SECRET_NAME}"
 
 nfs:
-  server: 192.168.0.101
+  server: 192.168.0.102
   path: /nfs/data
   mountOptions:
     - "hard"

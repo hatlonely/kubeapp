@@ -19,7 +19,7 @@ task:
       version: 5.0.8
     step:
       - test "${K8S_CONTEXT}" == "$(kubectl config current-context)" || exit 1
-      - sh ${DEP}/devops/tool/render.sh ops/${app} ${TMP}/${app}
+      - sh ${DEP}/devops/tool/render.sh values-adapter.yaml.tpl ${TMP}/${app}/values-adapter.yaml
       - |
         case "${cmd}" in
           "pull") helm pull ${chart} --version=${version} && mkdir -p ${HELM_HOME}/${app} && mv ${app}-${version}.tgz ${HELM_HOME}/${app}/;;
