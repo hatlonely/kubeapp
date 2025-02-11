@@ -34,9 +34,9 @@ include:
   - ops/etcd/.ops.yaml
 
 dep:
-  ops:
+  devops:
     type: git
-    url: "https://github.com/hatlonely/ops.git"
+    url: "https://github.com/hatlonely/devops.git"
     version: master
 
 env:

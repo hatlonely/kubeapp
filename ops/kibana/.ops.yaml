@@ -18,7 +18,6 @@ task:
         default: diff
         validation: x in ["pull", "diff", "install", "delete", "upgrade", "status", "password", "values", "image"]
     const:
-      SECRET_NAME: kibana-tls
       app: kibana
       chart: elastic/kibana
       version: 8.5.1
