@@ -42,7 +42,7 @@ task:
           "upgrade") helm upgrade -n "${NAMESPACE}" "${app}" "${chart}" -f "${TMP}/${app}/values-adapter.yaml" --version=${version};;
           "status") helm status -n "${NAMESPACE}" "${app}";;
           "delete")
-            helm delete -n "${NAMESPACE}" "${app}"
+            helm delete -n "${NAMESPACE}" "${app}" || true
             kubectl delete secret -n "${NAMESPACE}" kibana || true
             kubectl delete secret -n "${NAMESPACE}" kibana-kibana-es-token || true
             kubectl delete configmap -n "${NAMESPACE}" kibana-kibana-helm-scripts || true

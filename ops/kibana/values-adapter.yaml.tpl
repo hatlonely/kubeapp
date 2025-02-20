@@ -20,7 +20,7 @@ ingress:
       paths:
         - path: /
   tls:
-    - secretName: "${SECRET_NAME}"
+    - secretName: "${TLS_SECRET}"
       hosts:
         - "${KIBANA_HOST}"
 
